@@ -1,0 +1,1641 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+    <title>Web технологии. Семинар 1: CSS и Bootstrap</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=792, user-scalable=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../lectures/static/node_modules/shower-bright/styles/screen.css">
+    <link rel="stylesheet" href="../../lectures/static/css/highlight/github.css">
+    <link rel="stylesheet" href="../../lectures/static/css/index.css">
+    <style>
+        /* ---------- вспомогательные стили презентации ---------- */
+        .slide .sm, .slide .sm li, .slide .sm p { font-size: 20px; line-height: 1.6; }
+        .slide .sm li { margin-bottom: 4px; }
+        .slide .xs, .slide .xs li, .slide .xs td, .slide .xs th { font-size: 18px; line-height: 1.5; }
+        .slide .note { font-size: 18px; line-height: 1.5; color: #666; margin: 0; }
+        .slide .tip { font-size: 20px; line-height: 1.5; background: #f1f7fc; border-left: 4px solid #52A2DF;
+                      padding: 10px 16px; margin: 12px 0 0; }
+        .slide .warn { font-size: 20px; line-height: 1.5; background: #fdf3f2; border-left: 4px solid #b85450;
+                       padding: 10px 16px; margin: 12px 0 0; }
+        .slide h3 { font-size: 26px; line-height: 1.3; margin: 0 0 8px; }
+        .slide table.spec td, .slide table.spec th { padding: 4px 10px; }
+        .slide .lr pre { margin-bottom: 10px; }
+        .slide .pl { padding-left: 24px; box-sizing: border-box; }
+        .slide .shot { border: 1px solid #ccc; }
+        .slide plus, .slide minus { font-size: 20px; line-height: 1.6; }
+        .slide .lr ~ * { clear: both; }
+        .slide .lr { margin-bottom: 8px; }
+        .x-demo li { text-indent: 0; }
+
+        /* ---------- живые демо (префикс x-, чтобы не конфликтовать с темой) ---------- */
+        .x-demo { font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; color: #212529; }
+        .x-demo * { box-sizing: border-box; }
+        .x-label { font: 13px/1.2 monospace; color: #666; margin: 6px 0 2px; }
+
+        /* box-sizing */
+        .x-bs { width: 200px; padding: 20px; border: 5px solid #1f4e79; background: #f4cccc;
+                font-size: 14px; margin-bottom: 8px; }
+        .x-bs.cb { box-sizing: content-box; }
+        .x-bs.bb { box-sizing: border-box; }
+        .x-ruler { width: 200px; height: 6px; background: #52A2DF; margin-bottom: 4px; }
+
+        /* justify-content */
+        .x-jc { display: flex; background: #eef3f8; border: 1px dashed #9bb; padding: 4px; margin-bottom: 2px; }
+        .x-jc span { width: 44px; height: 22px; background: #b85450; margin: 0 2px; border-radius: 3px; }
+
+        /* бейдж на аватарке */
+        .x-ava { position: relative; display: inline-block; width: 96px; height: 96px; border-radius: 12px;
+                 background: linear-gradient(135deg, #9fc5e8, #3d85c6); margin: 10px 24px 0 0; }
+        .x-ava .x-badge { position: absolute; top: -8px; right: -8px; min-width: 28px; height: 28px; padding: 0 6px;
+                          border-radius: 14px; background: #dc3545; color: #fff; font: bold 15px/28px system-ui;
+                          text-align: center; }
+
+        /* шапка на flex */
+        .x-nav { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #f8f9fa;
+                 border: 1px solid #dee2e6; border-radius: 6px; flex-wrap: wrap; }
+        .x-nav .x-logo { font-weight: 700; font-size: 20px; color: #212529; text-decoration: none; }
+        .x-nav input { flex: 1 1 140px; min-width: 0; padding: 5px 10px; border: 1px solid #ced4da; border-radius: 20px; font: inherit; }
+        .x-nav .x-user { margin-left: auto; font-size: 14px; }
+
+        /* кнопки в стиле Bootstrap */
+        .x-btn { display: inline-block; padding: 4px 10px; font: 14px/1.5 system-ui; border-radius: 6px;
+                 border: 1px solid transparent; text-decoration: none; cursor: pointer; background: transparent; }
+        .x-btn-success { background: #198754; border-color: #198754; color: #fff; }
+        .x-btn-out-s { color: #198754; border-color: #198754; }
+        .x-btn-out-s.active { background: #198754; color: #fff; }
+        .x-btn-out-d { color: #dc3545; border-color: #dc3545; }
+        .x-btn-out-d.active { background: #dc3545; color: #fff; }
+
+        /* карточка вопроса */
+        .x-card { display: flex; gap: 14px; padding: 14px; border: 1px solid #dee2e6; border-radius: 8px; background: #fff;
+                  font-size: 15px; }
+        .x-card .x-side { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 64px; }
+        .x-card .x-pic { width: 64px; height: 64px; border-radius: 6px; background: linear-gradient(135deg, #b6d7a8, #6aa84f); }
+        .x-card .x-body { flex: 1; min-width: 0; }
+        .x-card .x-title { font-size: 18px; font-weight: 600; color: #0d6efd; margin: 0 0 4px; display: block; text-decoration: none; }
+        .x-card p { margin: 0 0 8px; color: #6c757d; font-size: 15px; line-height: 1.4; }
+        .x-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; }
+        .x-meta a { color: #0d6efd; }
+        .x-tag { display: inline-block; padding: 2px 7px; border-radius: 6px; background: #6c757d; color: #fff !important;
+                 font-size: 12px; font-weight: 600; text-decoration: none; }
+        .x-time { margin-left: auto; color: #6c757d; }
+        .x-vote { display: flex; flex-direction: column; align-items: center; gap: 2px; font: 14px/1.2 system-ui; }
+        .x-vote b { font-size: 15px; }
+        .x-vote .x-btn { padding: 0 8px; font-size: 12px; }
+
+        /* пагинация */
+        .x-pag { display: flex; flex-wrap: wrap; font: 15px/1 system-ui; }
+        .x-pag > * { display: block; padding: 8px 12px; border: 1px solid #dee2e6; margin-left: -1px; color: #0d6efd;
+                     text-decoration: none; background: #fff; }
+        .x-pag > .active { background: #0d6efd; color: #fff; border-color: #0d6efd; position: relative; }
+        .x-pag > .disabled { color: #6c757d; }
+
+        /* мини-layout на grid */
+        .x-grid { display: grid; grid-template-areas: "h h" "m s" "f f"; grid-template-columns: 2fr 1fr;
+                  grid-template-rows: 40px 150px 34px; gap: 6px; font: 14px/1 system-ui; }
+        .x-grid > div { display: flex; align-items: center; justify-content: center; border-radius: 4px; color: #fff; }
+        .x-grid .h { grid-area: h; background: #3d85c6; }
+        .x-grid .m { grid-area: m; background: #6aa84f; }
+        .x-grid .s { grid-area: s; background: #e69138; }
+        .x-grid .f { grid-area: f; background: #666; }
+
+        /* задачка на специфичность */
+        .quiz-ans .lead { font-size: 26px; margin: 0; }
+
+        /* nth-child */
+        .x-list { list-style: none; padding: 0; margin: 0; font: 16px/1.3 system-ui; }
+        .x-list li { padding: 4px 10px; margin: 0 !important; }
+        .slide .x-demo.x-list > li::before { content: none; display: none; }
+        .x-list li:nth-child(odd) { background: #f1f7fc; }
+        .x-list li:first-child { font-weight: 700; }
+        .x-list li:not(:last-child) { border-bottom: 1px solid #dee2e6; }
+    </style>
+</head>
+<body class="list">
+    <header class="caption">
+        <h1>Web технологии. Семинар 1: CSS и Bootstrap</h1>
+        <p><a href="https://education.vk.company/profile/e4e86t/">@ketovx</a></p>
+    </header>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Семинар 1<br>CSS и Bootstrap</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Преподаватель</h2>
+        <ul>
+            <li><b>Данил Максимович</b></li>
+            <li>Разработчик VK Education &amp; VK Internship</li>
+        </ul>
+        <h3>Контакты</h3>
+        <ul>
+            <li>Telegram: <a href="https://ketovx.t.me">https://ketovx.t.me</a></li>
+            <li>Почта: <a href="mailto:danil.gorev@vk.team">danil.gorev@vk.team</a></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>План занятия</h2>
+        <ol>
+            <li>CSS: синтаксис, селекторы, каскад и специфичность</li>
+            <li>Box model, display, позиционирование</li>
+            <li>Flexbox, Grid и адаптивная вёрстка</li>
+            <li>Bootstrap: сетка, утилиты, компоненты</li>
+            <li><b>Практика:</b> верстаем layout и список вопросов Q&amp;A-форума</li>
+            <li>Типовые ошибки ДЗ 1 и чек-лист сдачи</li>
+        </ol>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>CSS</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как задать оформление страницы?</h2>
+        <p>HTML, в отличие от XML, обладает семантикой, т.е. браузер знает как отображать тот или иной HTML тег.
+            В HTML есть теги для управления внешним видом (<code>font</code>, <code>big</code>, <code>center</code>, ...),
+            но их возможности явно недостаточны, и они устарели.</p>
+        <p>Решение — описывать внешний вид отдельно от структуры документа c помощью языка <b>Cascading Style Sheets</b>.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Синтаксис CSS</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css">
+                    h1 {
+                        color: navy;
+                        font-size: 32px;
+                        margin-bottom: 20px;
+                    }
+                    p.intro a,
+                    .btn-main {
+                        color: #3c3c3c;
+                        text-decoration: underline;
+                    }
+                    /* комментарий */
+                </script>
+            </div>
+            <div class="c4 pl sm">
+                <ul>
+                    <li><b>Селектор</b> — к каким элементам применить: <code>h1</code></li>
+                    <li><b>Свойство</b> — что меняем: <code>color</code></li>
+                    <li><b>Значение</b> — как меняем: <code>navy</code></li>
+                    <li>Пара «свойство: значение;» — <b>объявление</b></li>
+                    <li>Селектор + блок <code>{ }</code> — <b>правило</b></li>
+                </ul>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Где могут быть заданы стили?</h2>
+        <ul class="sm">
+            <li>Встроенные в браузер стили (user agent stylesheet)</li>
+            <li>Во внешнем файле — <b>основной способ</b><br>
+                <code>&lt;link rel="stylesheet" href="static/css/style.css"&gt;</code></li>
+            <li>В коде HTML документа<br>
+                <code>&lt;style&gt;...&lt;/style&gt;</code></li>
+            <li>В атрибуте конкретного тега — <b>избегаем</b><br>
+                <code>&lt;img style="margin: 3px" src="..."&gt;</code></li>
+        </ul>
+        <p class="tip">Порядок подключения важен: сначала <code>bootstrap.min.css</code>, потом <b>свой</b> <code>style.css</code> — так ваши правила смогут переопределить библиотечные.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Единицы измерения</h2>
+        <table class="spec sm">
+            <tr><th>Единица</th><th>Относительно чего</th><th>Где использовать</th></tr>
+            <tr><td><code>px</code></td><td>абсолютная</td><td>рамки, тени, мелкие отступы</td></tr>
+            <tr><td><code>%</code></td><td>размера родителя</td><td>ширины колонок</td></tr>
+            <tr><td><code>em</code></td><td>шрифта <b>текущего</b> элемента</td><td>отступы внутри кнопок</td></tr>
+            <tr><td><code>rem</code></td><td>шрифта <code>html</code> (обычно 16px)</td><td>шрифты, отступы — <b>лучший выбор</b></td></tr>
+            <tr><td><code>vw</code> / <code>vh</code></td><td>1% ширины / высоты окна</td><td><code>min-height: 100vh</code></td></tr>
+            <tr><td><code>fr</code></td><td>доля свободного места</td><td>колонки в Grid</td></tr>
+        </table>
+        <p class="note">Bootstrap 5 почти всё задаёт в <code>rem</code>: <code>1rem = 16px</code>, <code>.mb-3</code> = <code>margin-bottom: 1rem</code>.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Цвета и CSS-переменные</h2>
+        <div class="lr">
+            <div class="c5">
+                <script type="snippet" lang="css" scale="85">
+                    color: red;
+                    color: #ff0000;
+                    color: #f00;
+                    color: rgb(255 0 0);
+                    color: rgb(255 0 0 / 50%);
+                    color: hsl(0 100% 50%);
+                    color: transparent;
+                </script>
+            </div>
+            <div class="c5 pl">
+                <script type="snippet" lang="css" scale="85">
+                    :root {
+                        --brand: #198754;
+                        --gap: 1rem;
+                    }
+                    .logo {
+                        color: var(--brand);
+                        margin-right: var(--gap);
+                    }
+                </script>
+            </div>
+        </div>
+        <p class="tip">Переменные (custom properties) задаются один раз и наследуются. Bootstrap 5.3 сам построен на них: <code>--bs-primary</code>, <code>--bs-body-font-size</code>…</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>CSS селекторы</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Классы и идентификаторы</h2>
+        <script type="snippet" lang="html">
+            <div id="userpic"><img src="..." alt="..."></div>
+            <button class="btn btn-main">Одобрить</button>
+            <button class="btn">Написать комментарий</button>
+        </script>
+        <ul>
+            <li><code>id</code> — идентификатор элемента, должен быть <b>уникален</b> на странице</li>
+            <li><code>class</code> — список классов элемента через пробел, классы могут повторяться</li>
+        </ul>
+        <p class="tip">На практике стилизуем <b>классами</b>. <code>id</code> оставляем для якорей, <code>&lt;label for&gt;</code> и JavaScript.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Базовые селекторы</h2>
+        <ul>
+            <li>Универсальный селектор<br>
+                <code>* { box-sizing: border-box; }</code></li>
+            <li>Имена тегов<br>
+                <code>p { margin-top: 10px; }</code></li>
+            <li>Имена классов (с точки)<br>
+                <code>.btn { border: solid 1px gray; }</code></li>
+            <li>id тегов (с решётки)<br>
+                <code>#userpic { padding: 10px }</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Комбинаторы</h2>
+        <ul class="sm">
+            <li>Потомки на любой глубине (пробел)<br>
+                <code>.question-card a { text-decoration: none }</code></li>
+            <li>Прямые дети (вложенность = 1 уровень)<br>
+                <code>.menu &gt; li { display: inline-block }</code></li>
+            <li>Соседний элемент — сразу следующий<br>
+                <code>h2 + p { margin-top: 0 }</code></li>
+            <li>Все следующие соседи<br>
+                <code>h2 ~ p { color: gray }</code></li>
+            <li>Группировка<br>
+                <code>h1, h2, h3 { font-weight: 300 }</code></li>
+            <li>Несколько условий на один элемент (без пробела!)<br>
+                <code>button.btn.active</code> ≠ <code>button .btn .active</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Селекторы атрибутов</h2>
+        <script type="snippet" lang="css">
+            input[type="search"]   { border-radius: 20px; }
+            a[href^="https://"]    { color: green; }    /* начинается с */
+            a[href$=".pdf"]        { font-weight: bold; } /* заканчивается на */
+            img[alt=""]            { outline: 3px solid red; } /* пустой alt */
+            button[aria-pressed="true"] { background: #198754; }
+        </script>
+        <p class="tip">Удобно стилизовать <b>состояния</b> через атрибуты: та же разметка, что нужна для доступности, управляет видом.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Псевдоклассы: состояния</h2>
+        <ul id="demo" class="sm">
+            <li><code>a:link</code>, <code>a:visited</code> ― непосещённая / посещённая ссылка</li>
+            <li><code>.btn:hover</code> ― элемент под курсором</li>
+            <li><code>input:focus</code> ― элемент в фокусе</li>
+            <li><code>:focus-visible</code> ― фокус с клавиатуры (не убирайте <code>outline</code> без замены!)</li>
+            <li><code>.btn:active</code> ― в момент нажатия</li>
+            <li><code>input:disabled</code>, <code>input:checked</code>, <code>input:invalid</code> ― состояния полей формы</li>
+        </ul>
+        <script type="snippet" lang="css">
+            .question-card:hover { box-shadow: 0 2px 8px rgb(0 0 0 / 15%); }
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Псевдоклассы: структура</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css" scale="80">
+                    li:first-child {
+                        font-weight: 700;
+                    }
+                    li:nth-child(odd) {
+                        background: #f1f7fc;
+                    }
+                    li:not(:last-child) {
+                        border-bottom: 1px solid #ddd;
+                    }
+                    /* ещё: :last-child, :nth-child(3n+1) */
+                </script>
+            </div>
+            <div class="c4 pl">
+                <ul class="x-list x-demo">
+                    <li>Mr. Freeman</li>
+                    <li>Dr. House</li>
+                    <li>Bender</li>
+                    <li>Queen Victoria</li>
+                    <li>V. Pupkin</li>
+                </ul>
+                <p class="note">Живой пример: так можно оформить список Best Members</p>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Псевдоэлементы</h2>
+        <ul class="sm">
+            <li><code>.el::before</code> / <code>.el::after</code> ― виртуальный элемент в начале / конце содержимого <code>.el</code>. Без свойства <code>content</code> не появится</li>
+            <li><code>::placeholder</code>, <code>::selection</code>, <code>::first-letter</code></li>
+        </ul>
+        <script type="snippet" lang="css">
+            .jack-sparrow::before {
+                content: "Captain ";
+            }
+            .jack-sparrow:hover::before {
+                color: red;
+            }
+            .required-label::after { content: " *"; color: #dc3545; }
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как называть классы?</h2>
+        <ul class="sm">
+            <li>Называем по <b>смыслу</b>, а не по виду: <code>.question-card</code>, а не <code>.gray-box-left</code></li>
+            <li>Один стиль — один класс, не завязываемся на теги и вложенность</li>
+            <li>Популярная методология — <b>БЭМ</b> (блок__элемент--модификатор):</li>
+        </ul>
+        <script type="snippet" lang="html">
+            <article class="question-card question-card--hot">
+              <h2 class="question-card__title">...</h2>
+              <div class="question-card__tags">...</div>
+            </article>
+        </script>
+        <p class="note">Плоские селекторы из одного класса легко читать и легко переопределять: у всех одинаковая специфичность.</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Каскад и<br>специфичность</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Наследование стилей</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="html" scale="80">
+                    <style>
+                      body {
+                        color: darkgray;
+                        font-family: Arial;
+                      }
+                      p { font-size: 110%; }
+                    </style>
+                    <body>
+                      <p>Привет, <a href="/">Мир</a></p>
+                    </body>
+                </script>
+            </div>
+            <div class="c4 pl sm">
+                <p style="margin: 0 0 8px"><b>Наследуются</b>: <code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>text-align</code>, <code>visibility</code>…</p>
+                <p style="margin: 0 0 8px"><b>Не наследуются</b>: <code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>display</code>…</p>
+                <p style="margin: 0">Заставить: <code>inherit</code></p>
+            </div>
+        </div>
+        <p class="tip">Поэтому шрифт и цвет удобно задать один раз на <code>body</code> — Bootstrap так и делает.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Каскад: кто победит?</h2>
+        <p class="sm" style="margin-bottom: 12px">Если несколько правил задают одно свойство одному элементу, браузер сравнивает по очереди:</p>
+        <ol class="sm">
+            <li><b>Важность и источник</b>: <code>!important</code> &gt; стили автора &gt; стили браузера</li>
+            <li><b>Специфичность</b> селектора (атрибут <code>style=""</code> сильнее любого селектора)</li>
+            <li><b>Порядок</b>: при равной специфичности побеждает правило, которое ниже в коде / в файле, подключённом позже</li>
+        </ol>
+        <script type="snippet" lang="css">
+            .btn { color: white; }   /* bootstrap.min.css */
+            .btn { color: yellow; }  /* style.css, подключён позже — победит */
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Расчёт специфичности</h2>
+        <p class="sm" style="margin-bottom: 10px">Считаем три числа <b>(A, B, C)</b> и сравниваем слева направо:</p>
+        <ul class="sm">
+            <li><b>A</b> — количество id</li>
+            <li><b>B</b> — классы, атрибуты <code>[type]</code>, псевдоклассы <code>:hover</code></li>
+            <li><b>C</b> — теги и псевдоэлементы <code>::before</code></li>
+            <li><code>*</code> и комбинаторы не считаются; <code>:not(x)</code> и <code>:is(x)</code> — по аргументу, <code>:where()</code> — 0</li>
+        </ul>
+        <table class="spec xs">
+            <tr><th>Селектор</th><th>(A, B, C)</th></tr>
+            <tr><td><code>ul.info ol + li</code></td><td>(0, 1, 3)</td></tr>
+            <tr><td><code>li.red.level</code></td><td>(0, 2, 1)</td></tr>
+            <tr><td><code>#userpic a:hover</code></td><td>(1, 1, 1)</td></tr>
+        </table>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Специфичность: «баллы» не складываются</h2>
+        <p class="sm">Часто объясняют так: id = 100, класс = 10, тег = 1. Для оценки «на глаз» сойдёт, но это не сложение:</p>
+        <script type="snippet" lang="css">
+            /* (0, 11, 0) — 11 классов */
+            .a.b.c.d.e.f.g.h.i.j.k { color: red; }
+            /* (1, 0, 0) — один id. Победит он! */
+            #title { color: green; }
+        </script>
+        <p class="tip">Хотите легко переопределять стили — держите специфичность <b>низкой и одинаковой</b>: один класс на правило.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Задачка: какого цвета текст?</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="html" scale="85">
+                    <p id="intro" class="text lead">
+                      Текст
+                    </p>
+                    <style>
+                      p.lead.text { color: red; }
+                      #intro      { color: green; }
+                      body p      { color: blue; }
+                      .lead       { color: orange; }
+                    </style>
+                </script>
+            </div>
+            <div class="c4 pl quiz-ans">
+                <div class="next">
+                    <p class="lead" id="quiz2" style="color: green"><b>Зелёный</b></p>
+                    <p class="note">#intro — (1,0,0)<br>p.lead.text — (0,2,1)<br>body p — (0,0,2)<br>.lead — (0,1,0)</p>
+                </div>
+                <div class="next">
+                    <p class="note" style="margin-top: 16px">А если добавить<br><code>.lead { color: orange !important; }</code>?<br><b style="color:#e69138; font-size: 22px">Оранжевый</b> — <code>!important</code> выигрывает у любой специфичности</p>
+                </div>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Почему <code>!important</code> — плохая идея</h2>
+        <ul class="sm">
+            <li>Перебить <code>!important</code> можно только другим <code>!important</code> — начинается «гонка вооружений»</li>
+            <li>Стили перестают читаться: непонятно, откуда что взялось</li>
+            <li>Ломает утилиты Bootstrap (они сами написаны с <code>!important</code>)</li>
+        </ul>
+        <h3>Как переопределить Bootstrap правильно</h3>
+        <ol class="sm">
+            <li>Подключить свой CSS <b>после</b> Bootstrap</li>
+            <li>Добавить свой класс: <code>&lt;a class="btn btn-success btn-ask"&gt;</code></li>
+            <li>Или поменять CSS-переменную: <code>.btn-ask { --bs-btn-bg: #2b9348; }</code></li>
+        </ol>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>DevTools — главный инструмент верстальщика</h2>
+        <ul class="sm">
+            <li><b>F12</b> / <b>Cmd+Opt+I</b> → вкладка Elements, выбор элемента — <b>Cmd/Ctrl+Shift+C</b></li>
+            <li><b>Styles</b> — все правила элемента; перечёркнутые проиграли каскад</li>
+            <li><b>Computed</b> — итоговые значения и откуда они пришли</li>
+            <li>Схема <b>box model</b> внизу панели — margin / border / padding / размеры</li>
+            <li>Значения можно править прямо в браузере, а потом перенести в файл</li>
+            <li><b>Device toolbar</b> (<b>Cmd/Ctrl+Shift+M</b>) — проверка адаптива</li>
+        </ul>
+        <script type="snippet" lang="css">
+            * { outline: 1px solid red; } /* временно: увидеть все блоки */
+        </script>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Отступы и box model</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Отступы</h2>
+        <div class="lr">
+            <div class="c5">
+                <img src="../../lectures/lecture-1/lesson-4/pictures/boxmodel.png" alt="Box model: content, padding, border, margin">
+            </div>
+            <div class="c5">
+                Способы задания отступов:
+                <script type="snippet" lang="css" scale="85">
+                    margin: 10px;
+                    margin: 10px 5px;
+                    margin: 10px 2px 5px;
+                    margin: 1px 2px 3px 4px;
+                    margin-left: 10px;
+                    margin: 0 auto;
+                </script>
+                <p class="note">Порядок — по часовой: верх, право, низ, лево. <code>0 auto</code> — центрирует блок с заданной шириной</p>
+                <p class="note" style="margin-top: 6px"><code>padding</code> — внутри рамки (фон виден), <code>margin</code> — снаружи</p>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>box-sizing</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css">
+                    .box {
+                        width: 200px;
+                        padding: 20px;
+                        border: 5px solid navy;
+                    }
+                    /* сразу для всех */
+                    *, *::before, *::after {
+                        box-sizing: border-box;
+                    }
+                </script>
+                <p class="note">Bootstrap уже включает <code>border-box</code> для всех элементов</p>
+            </div>
+            <div class="c4 pl x-demo">
+                <div class="x-label">width: 200px — эталон</div>
+                <div class="x-ruler"></div>
+                <div class="x-label">content-box (по умолчанию): 250px</div>
+                <div class="x-bs cb">ширина «съехала»</div>
+                <div class="x-label">border-box: ровно 200px</div>
+                <div class="x-bs bb">ширина = width</div>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Схлопывание margin</h2>
+        <div class="lr">
+            <div class="c5">
+                <script type="snippet" lang="css" scale="85">
+                    h2 {
+                        margin-bottom: 30px;
+                    }
+                    p {
+                        margin-top: 20px;
+                    }
+                    /* между ними 30px,
+                       а не 50px */
+                </script>
+            </div>
+            <div class="c5 pl sm">
+                <ul>
+                    <li>Вертикальные margin соседних блоков <b>не складываются</b> — берётся больший</li>
+                    <li>Margin первого ребёнка может «выпасть» из родителя</li>
+                    <li>Внутри flex и grid схлопывания нет</li>
+                </ul>
+            </div>
+        </div>
+        <p class="tip">Практическое правило: отступы между блоками задаём в <b>одну сторону</b> (например, только <code>margin-bottom</code>, в Bootstrap — <code>.mb-3</code>) или через <code>gap</code>.</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>display<br>и position</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Режимы отображения элементов</h2>
+        <ul class="sm">
+            <li><code>display: none</code> ― элемент невидим, не занимает места</li>
+            <li><code>display: block</code> ― занимает всю ширину, начинается с новой строки, учитывает <code>width</code>, <code>height</code></li>
+            <li><code>display: inline</code> ― занимает минимальную ширину, не прерывает строку, игнорирует <code>width</code>, <code>height</code> и вертикальные margin</li>
+            <li><code>display: inline-block</code> ― блочный элемент, но не разрывает строку, примерно как <code>img</code></li>
+            <li><code>display: flex</code> / <code>grid</code> ― элемент становится контейнером и раскладывает своих детей</li>
+        </ul>
+        <p class="note"><code>visibility: hidden</code> — элемент невидим, но место занимает</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>DIV vs. SPAN</h2>
+        <div class="lr">
+            <div class="c7">
+                <script type="snippet" lang="html">
+                    <div class="t">ONE</div>
+                    <div class="t">2</div>
+                    <span class="t">ONE</span>
+                    <span class="t">2</span>
+                    <style>
+                     .t {
+                        width: 150px; height: 100px;
+                        background: red; color: white;
+                        margin: 30px; padding: 4px;
+                    }
+                    </style>
+                </script>
+            </div>
+            <div class="c3">
+                <div class="tbrd">
+                    <div class="t">ONE</div>
+                    <div class="t">2</div>
+                    <span class="t">ONE</span>
+                    <span class="t">2</span>
+                    <style>
+                     .t {
+                        width: 150px; height: 100px;
+                        background: #b85450; color: white;
+                        margin: 30px; padding: 4px;
+                    }
+                    .tbrd {
+                        border: solid 2px gray;
+                    }
+                    </style>
+                </div>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>float &amp; clear</h2>
+        <p>
+            <img src="../../lectures/lecture-1/lesson-4/pictures/lorem.jpeg" alt="" style="float: left; margin-right: 30px; width: 150px; height: 130px;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tempor iaculis massa. Fusce sollicitudin purus viverra erat sollicitudin placerat sit amet ut diam.
+        </p>
+        <p><code>float: left</code> / <code>right</code> — всплывание, текст обтекает элемент, <code>clear: both</code> — отменяет всплывание, &laquo;проводит черту&raquo;</p>
+        <p class="warn" style="clear: both">Сегодня float нужен только для обтекания текстом. Колонки и раскладку делаем на <b>flex</b> / <b>grid</b>.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>float &amp; clear</h2>
+        <div class="lr">
+            <div class="c7">
+                <script type="snippet" lang="html">
+                    <div class="outer">
+                      <div class="sqr fl"></div> ...
+                      <div class="clr"></div>
+                      <div class="sqr fr"></div> ...
+                    </div>
+                    <style>
+                    .outer { float: left; width:300px }
+                    .sqr { width: 70px; height: 70px }
+                    .fl { float: left; }
+                    .fr { float: right; }
+                    .clr { clear: both; }
+                    </style>
+                </script>
+            </div>
+            <div class="c3">
+                <div class="outer">
+                  <div class="sqr fl"></div>
+                  <div class="sqr fl"></div>
+                  <div class="sqr fl"></div>
+                  <div class="sqr fl"></div>
+                  <div class="clr"></div>
+                  <div class="sqr fr"></div>
+                  <div class="sqr fr"></div>
+                  <div class="sqr fr"></div>
+                  <div class="sqr fr"></div>
+                </div>
+                <style>
+                .outer { float: left; width:300px; border: solid 2px gray; }
+                .sqr { width: 70px; height: 70px; background: #b85450; margin: 10px }
+                .fl { float: left; }
+                .fr { float: right; }
+                .clr { clear: both; }
+                </style>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Позиционирование</h2>
+        <ul class="sm">
+            <li><code>position: static</code> ― обычный поток (по умолчанию)</li>
+            <li><code>position: relative</code> ― смещение от своего обычного места; место в потоке сохраняется</li>
+            <li><code>position: absolute</code> ― вынут из потока; отсчёт от ближайшего предка с <code>position</code> ≠ <code>static</code>, иначе — от документа</li>
+            <li><code>position: fixed</code> ― относительно окна браузера, не прокручивается</li>
+            <li><code>position: sticky</code> ― ведёт себя как relative, пока не «прилипнет» при прокрутке</li>
+            <li><code>top</code> / <code>right</code> / <code>bottom</code> / <code>left</code> ― отступы, могут быть отрицательными</li>
+            <li><code>z-index</code> ― порядок наложения (работает у позиционированных элементов)</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример: relative + absolute</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css">
+                    .avatar {
+                        position: relative;
+                    }
+                    .avatar__badge {
+                        position: absolute;
+                        top: -8px;
+                        right: -8px;
+                    }
+                </script>
+            </div>
+            <div class="c4 pl x-demo">
+                <span class="x-ava"><span class="x-badge">3</span></span>
+                <span class="x-ava"><span class="x-badge">99+</span></span>
+                <p class="note" style="margin-top: 16px">Счётчик уведомлений на аватарке. Без <code>relative</code> у родителя бейдж улетит в угол страницы.</p>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример: sticky и fixed</h2>
+        <script type="snippet" lang="css">
+            .header {
+                position: sticky; /* прилипнет при прокрутке */
+                top: 0;           /* ...когда достигнет верха окна */
+                z-index: 10;      /* поверх контента */
+                background: white;
+            }
+            .chat-button {
+                position: fixed;  /* всегда в одном месте экрана */
+                right: 20px;
+                bottom: 20px;
+            }
+        </script>
+        <p class="note">В Bootstrap есть готовые классы: <code>.sticky-top</code>, <code>.fixed-top</code>, <code>.position-relative</code>, <code>.position-absolute</code></p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Flexbox</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Flexbox: основные понятия</h2>
+        <ul class="sm">
+            <li>Раскладка в <b>одном направлении</b>: строка или колонка</li>
+            <li><b>Flex-контейнер</b> — элемент с <code>display: flex</code></li>
+            <li><b>Flex-элементы</b> — его <b>прямые</b> потомки</li>
+            <li><b>Главная ось</b> (main axis) — направление раскладки, задаётся <code>flex-direction</code></li>
+            <li><b>Поперечная ось</b> (cross axis) — перпендикулярна главной</li>
+        </ul>
+        <script type="snippet" lang="html">
+            <div class="navbar">            <!-- контейнер -->
+                <a class="logo">...</a>      <!-- элемент -->
+                <form class="search">...</form>  <!-- элемент -->
+            </div>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Свойства контейнера</h2>
+        <script type="snippet" lang="css">
+            .container {
+                display: flex;
+                flex-direction: row;       /* row | column | row-reverse */
+                justify-content: space-between; /* по главной оси */
+                align-items: center;       /* по поперечной оси */
+                flex-wrap: wrap;           /* переносить на новую строку */
+                gap: 16px;                 /* расстояние между элементами */
+            }
+        </script>
+        <p class="tip"><code>gap</code> вместо margin у каждого элемента: нет лишнего отступа у крайних, ничего не схлопывается.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>justify-content</h2>
+        <div class="x-demo" style="width: 600px">
+            <div class="x-label">flex-start</div>
+            <div class="x-jc" style="justify-content: flex-start"><span></span><span></span><span></span></div>
+            <div class="x-label">center</div>
+            <div class="x-jc" style="justify-content: center"><span></span><span></span><span></span></div>
+            <div class="x-label">flex-end</div>
+            <div class="x-jc" style="justify-content: flex-end"><span></span><span></span><span></span></div>
+            <div class="x-label">space-between</div>
+            <div class="x-jc" style="justify-content: space-between"><span></span><span></span><span></span></div>
+            <div class="x-label">space-around</div>
+            <div class="x-jc" style="justify-content: space-around"><span></span><span></span><span></span></div>
+            <div class="x-label">space-evenly</div>
+            <div class="x-jc" style="justify-content: space-evenly"><span></span><span></span><span></span></div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Свойства элементов</h2>
+        <script type="snippet" lang="css">
+            .search  { flex: 1; }        /* забрать всё свободное место */
+            .avatar  { flex-shrink: 0; } /* не сжиматься */
+            .content { flex: 1; min-width: 0; } /* можно сжиматься */
+            .user    { margin-left: auto; }  /* прижать вправо */
+            .badge   { align-self: flex-start; } /* своё выравнивание */
+            .first   { order: -1; }       /* поменять порядок */
+        </script>
+        <p class="note"><code>flex: 1</code> — сокращение для <code>flex-grow: 1; flex-shrink: 1; flex-basis: 0</code>.
+            <code>min-width: 0</code> нужен, чтобы длинный текст не распирал flex-элемент.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример: шапка сайта</h2>
+        <div class="lr">
+            <div class="c5">
+                <script type="snippet" lang="css">
+                    .header {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 12px;
+                    }
+                    .header__search {
+                        flex: 1 1 140px;
+                    }
+                    .header__user {
+                        margin-left: auto;
+                    }
+                </script>
+            </div>
+            <div class="c5 pl x-demo">
+                <div class="x-label">широкий экран</div>
+                <div class="x-nav">
+                    <a class="x-logo" href="#">AskPupkin</a>
+                    <input type="search" placeholder="Поиск">
+                    <a class="x-btn x-btn-success" href="#">ASK!</a>
+                    <span class="x-user">Dr. Pepper</span>
+                </div>
+                <div class="x-label" style="margin-top: 18px">узкий экран: <code>flex-wrap</code> переносит</div>
+                <div class="x-nav" style="width: 240px">
+                    <a class="x-logo" href="#">AskPupkin</a>
+                    <input type="search" placeholder="Поиск">
+                    <a class="x-btn x-btn-success" href="#">ASK!</a>
+                    <span class="x-user">Dr. Pepper</span>
+                </div>
+            </div>
+        </div>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Grid</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Grid: основные понятия</h2>
+        <ul class="sm">
+            <li>Раскладка <b>сразу в двух измерениях</b>: строки и колонки</li>
+            <li><b>Grid-контейнер</b> — элемент с <code>display: grid</code></li>
+            <li><code>grid-template-columns</code> / <code>rows</code> — размеры колонок и строк</li>
+            <li><code>fr</code> — доля свободного места: <code>2fr 1fr</code> = две трети и треть</li>
+            <li><code>grid-template-areas</code> — именованные области</li>
+            <li><code>gap</code> — промежутки между ячейками</li>
+        </ul>
+        <script type="snippet" lang="css">
+            .cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            } /* адаптивная сетка карточек без медиа-запросов */
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример: layout страницы на Grid</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css" scale="70">
+                    .layout {
+                      display: grid;
+                      grid-template-areas:
+                        "header header"
+                        "main   sidebar"
+                        "footer footer";
+                      grid-template-columns: 2fr 1fr;
+                      grid-template-rows: auto 1fr auto;
+                      min-height: 100vh;
+                      gap: 1rem;
+                    }
+                    header { grid-area: header; }
+                    main   { grid-area: main; }
+                    aside  { grid-area: sidebar; }
+                    footer { grid-area: footer; }
+                </script>
+            </div>
+            <div class="c4 pl">
+                <div class="x-grid">
+                    <div class="h">header</div>
+                    <div class="m">main</div>
+                    <div class="s">sidebar</div>
+                    <div class="f">footer</div>
+                </div>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Flex или Grid?</h2>
+        <div class="lr sm">
+            <div class="c5">
+                <h3>Flexbox</h3>
+                <ul>
+                    <li>Одно измерение: строка <b>или</b> колонка</li>
+                    <li>Размер определяется содержимым</li>
+                    <li>Шапка, меню, кнопки в ряд, карточка «аватар + текст», центрирование</li>
+                </ul>
+            </div>
+            <div class="c5 pl">
+                <h3>Grid</h3>
+                <ul>
+                    <li>Два измерения сразу</li>
+                    <li>Сначала сетка, потом содержимое</li>
+                    <li>Каркас страницы, галереи, сетки карточек</li>
+                </ul>
+            </div>
+        </div>
+        <p class="tip" style="clear: both">Они отлично сочетаются: grid для каркаса, flex — внутри блоков. Сетка Bootstrap, кстати, построена на flexbox.</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Адаптивная вёрстка</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Начинаем с viewport</h2>
+        <script type="snippet" lang="html">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </script>
+        <ul class="sm">
+            <li>Без этой строки мобильный браузер рисует страницу шириной ~980px и уменьшает её — медиа-запросы <b>не срабатывают</b></li>
+            <li>Ширины, на которых проверяем ДЗ: <b>≥1200px</b> (десктоп), <b>768px</b> (планшет), <b>375px</b> (телефон)</li>
+            <li>Главный признак поломки — <b>горизонтальный скролл</b></li>
+        </ul>
+        <p class="note">Проверка в консоли DevTools: <code>document.documentElement.scrollWidth &gt; innerWidth</code> → <code>true</code> = что-то вылезло</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Медиа-запросы</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="css" scale="75">
+                    /* базовые стили — для телефона */
+                    .layout { display: block; }
+
+                    /* от 768px и шире */
+                    @media (min-width: 768px) {
+                      .layout {
+                        display: grid;
+                        grid-template-columns: 2fr 1fr;
+                      }
+                    }
+                </script>
+            </div>
+            <div class="c4 pl sm">
+                <ul>
+                    <li><b>Mobile-first</b>: сначала узкий экран, потом <code>min-width</code> для широких</li>
+                    <li>Так устроен Bootstrap: <code>.col-md-8</code> = «8 колонок <b>начиная</b> с md»</li>
+                    <li>Вместо фиксированных <code>width</code> — <code>max-width</code>, <code>%</code>, <code>fr</code></li>
+                </ul>
+            </div>
+        </div>
+        <p class="note">Картинки не вылезают за контейнер: <code>img { max-width: 100%; height: auto; }</code> (в Bootstrap — <code>.img-fluid</code>)</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Footer прижат к низу экрана</h2>
+        <p class="sm" style="margin-bottom: 12px">Требование ДЗ: если контента мало, footer всё равно внизу окна.</p>
+        <div class="lr">
+            <div class="c4">
+                <script type="snippet" lang="css" scale="80">
+                    body {
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    footer {
+                        margin-top: auto;
+                    }
+                </script>
+            </div>
+            <div class="c6 pl">
+                <script type="snippet" lang="html" scale="75">
+                    <!-- то же самое на Bootstrap -->
+                    <body class="d-flex flex-column
+                                 min-vh-100">
+                      <header>...</header>
+                      <div class="container">...</div>
+                      <footer class="mt-auto">...</footer>
+                    </body>
+                </script>
+            </div>
+        </div>
+        <p class="warn" style="clear: both"><code>position: fixed; bottom: 0</code> — <b>не то</b>: футер будет перекрывать контент на длинных страницах.</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Bootstrap</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что такое Bootstrap?</h2>
+        <p>Bootstrap — готовая библиотека стилей (CSS-фреймворк), изначально от Twitter.
+           Позволяет быстро сделать аккуратный адаптивный интерфейс даже при базовых знаниях CSS.</p>
+        <p>В ДЗ используем <b>Bootstrap 5.3</b> — <a href="https://getbootstrap.com/docs/5.3/">getbootstrap.com/docs/5.3</a></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что включает в себя Bootstrap?</h2>
+        <ul>
+            <li>Шаблон страницы</li>
+            <li>Сетка</li>
+            <li>Современные «стили по умолчанию» (Reboot)</li>
+            <li>Утилиты: отступы, flex, цвета, размеры, …</li>
+            <li>Вёрстка: таблицы, формы, списки, кнопки, …</li>
+            <li>Компоненты: навигация, карточки, пагинатор, …</li>
+            <li>JavaScript плагины: выпадающие меню, модальные окна</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Подключаем локально</h2>
+        <div class="lr">
+            <div class="c4 sm">
+                <p style="margin: 0 0 8px">Требование ДЗ: никаких CDN, вся статика — в <code>public/static/</code></p>
+                <ol>
+                    <li>Скачать архив <b>Compiled CSS and JS</b> со страницы Download</li>
+                    <li>Скопировать <code>bootstrap.min.css</code> и <code>bootstrap.bundle.min.js</code></li>
+                    <li>Подключить по относительному пути</li>
+                </ol>
+            </div>
+            <div class="c6 pl">
+                <script type="snippet" lang="text" scale="70">
+                    public/
+                    ├── base.html, index.html, ...
+                    └── static/
+                        ├── css/
+                        │   ├── bootstrap.min.css
+                        │   └── style.css
+                        ├── js/
+                        │   └── bootstrap.bundle.min.js
+                        └── img/
+                            ├── favicon.svg
+                            └── avatar.jpg
+                </script>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаблон страницы</h2>
+        <script type="snippet" lang="html">
+            <!doctype html>
+            <html lang="ru">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>AskPupkin — новые вопросы</title>
+              <link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+              <link rel="stylesheet" href="static/css/bootstrap.min.css">
+              <link rel="stylesheet" href="static/css/style.css">
+            </head>
+            <body>
+              ...
+              <script src="static/js/bootstrap.bundle.min.js"></script>
+            </body>
+            </html>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Сетка Bootstrap</h2>
+        <script type="snippet" lang="html">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-4 col-lg-2">LEFT</div>
+                <div class="col-md-8 col-lg-10">CONTENT</div>
+              </div>
+            </div>
+        </script>
+        <img src="../../lectures/lecture-1/lesson-4/pictures/grid1.png" alt="Сетка из 12 колонок" width="100%">
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Правила сетки</h2>
+        <ul class="sm">
+            <li><code>.container</code> → <code>.row</code> → <code>.col-*</code>, контент кладём только в колонки</li>
+            <li>В строке <b>12</b> колонок; больше 12 — колонка переносится на новую строку</li>
+            <li><code>.col-md-8</code> — 8 из 12 колонок <b>начиная</b> с ширины md, на меньших — 100%</li>
+            <li><code>.col</code> — делим поровну, <code>.col-auto</code> — по ширине содержимого</li>
+            <li>Расстояние между колонками — <code>.g-3</code>, <code>.gx-4</code>, <code>.gy-2</code></li>
+            <li>Колонку можно снова делить: внутри <code>.col</code> — новый <code>.row</code></li>
+        </ul>
+        <table class="spec xs">
+            <tr><th>Префикс</th><th>—</th><th>sm</th><th>md</th><th>lg</th><th>xl</th><th>xxl</th></tr>
+            <tr><td>Ширина от</td><td>0</td><td>576px</td><td>768px</td><td>992px</td><td>1200px</td><td>1400px</td></tr>
+        </table>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Утилиты</h2>
+        <table class="spec xs">
+            <tr><th>Класс</th><th>Что делает</th></tr>
+            <tr><td><code>m-0</code>…<code>m-5</code>, <code>mt-3</code>, <code>px-2</code>, <code>mx-auto</code></td><td>margin / padding: 0…3rem<br>t, b, s(tart), e(nd), x, y</td></tr>
+            <tr><td><code>d-flex</code>, <code>d-none</code>, <code>d-md-block</code></td><td>display, в т.ч. с брейкпоинтом</td></tr>
+            <tr><td><code>flex-column</code>, <code>flex-wrap</code>, <code>flex-grow-1</code></td><td>свойства flex</td></tr>
+            <tr><td><code>align-items-center</code>, <code>gap-2</code></td><td>выравнивание, промежутки</td></tr>
+            <tr><td><code>text-muted</code>, <code>fw-bold</code>, <code>small</code>, <code>text-break</code></td><td>текст</td></tr>
+            <tr><td><code>bg-light</code>, <code>border-bottom</code>, <code>rounded</code>, <code>w-100</code></td><td>фон, рамки, размеры</td></tr>
+        </table>
+        <p class="note">Утилиты закрывают 90% «подвинуть на 10px» без своего CSS и без <code>style=""</code>.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Компоненты для нашего проекта</h2>
+        <table class="spec xs">
+            <tr><th>Где</th><th>Компонент Bootstrap</th></tr>
+            <tr><td>Header: поиск, кнопка ASK</td><td><code>form-control</code>, <code>btn btn-success</code> (или <code>navbar</code>)</td></tr>
+            <tr><td>Карточка вопроса</td><td><code>card</code>, <code>card-body</code>, <code>card-title</code></td></tr>
+            <tr><td>Теги</td><td><code>badge</code>, <code>text-bg-primary</code></td></tr>
+            <tr><td>Лайки</td><td><code>btn btn-outline-success</code> + <code>active</code></td></tr>
+            <tr><td>Пагинатор</td><td><code>pagination</code>, <code>page-item</code>, <code>page-link</code></td></tr>
+            <tr><td>Best Members</td><td><code>list-group</code> или <code>list-unstyled</code></td></tr>
+            <tr><td>Формы (ДЗ: ask, login, signup)</td><td><code>form-label</code>, <code>form-text</code>, <code>is-invalid</code>, <code>invalid-feedback</code>, <code>alert</code></td></tr>
+        </table>
+        <p class="note">У каждого компонента в документации есть готовый пример разметки</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Практика:<br>Q&amp;A-форум</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что верстаем сегодня</h2>
+        <div class="lr">
+            <div class="c5">
+                <img src="../../homeworks/img/main.png" alt="Макет главной страницы" class="shot" style="width: 340px">
+            </div>
+            <div class="c5 pl sm">
+                <h3>base.html — layout</h3>
+                <ul style="margin-bottom: 14px">
+                    <li>header: логотип, поиск, ASK!, юзерблок</li>
+                    <li>main + sidebar</li>
+                    <li>footer, title, favicon</li>
+                </ul>
+                <h3>index.html — вопросы</h3>
+                <ul>
+                    <li>карточка вопроса</li>
+                    <li>лайки (3 состояния)</li>
+                    <li>пагинатор</li>
+                </ul>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 1. Каркас base.html</h2>
+        <script type="snippet" lang="html" scale="85">
+            <body class="d-flex flex-column min-vh-100">
+              <header class="border-bottom mb-4">...</header>
+              <div class="container">
+                <div class="row g-4">
+                  <main class="col-12 col-lg-8">...</main>
+                  <aside class="col-12 col-lg-4">...</aside>
+                </div>
+              </div>
+              <footer class="border-top mt-auto py-3">...</footer>
+            </body>
+        </script>
+        <p class="note">Семантические теги <code>header</code> / <code>main</code> / <code>aside</code> / <code>footer</code> вместо безликих <code>div</code>. На ширине &lt; 992px sidebar уходит под контент.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 2. Header</h2>
+        <script type="snippet" lang="html" scale="80">
+            <header class="border-bottom mb-4">
+              <div class="container py-3 d-flex flex-wrap
+                          align-items-center gap-3">
+                <a href="index.html" class="logo">AskPupkin</a>
+                <form class="header-search" role="search">
+                  <input type="search" name="q" class="form-control"
+                         placeholder="Поиск" aria-label="Поиск">
+                </form>
+                <a href="ask.html" class="btn btn-success">ASK!</a>
+                <div class="user-block ms-auto">...</div>
+              </div>
+            </header>
+        </script>
+        <p class="note">Логотип — <b>ссылка</b> на главную; ASK! — ссылка на <code>ask.html</code>, выглядящая как кнопка.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 3. Юзерблок: два состояния</h2>
+        <div class="lr">
+            <div class="c5">
+                <p class="note">Авторизован (страница профиля)</p>
+                <script type="snippet" lang="html" scale="62">
+                    <div class="user-block ms-auto d-flex
+                                align-items-center gap-2">
+                      <img src="static/img/avatar.jpg"
+                           alt="Аватар Dr. Pepper"
+                           width="48" height="48"
+                           class="rounded avatar">
+                      <div class="small">
+                        <div class="fw-semibold">Dr. Pepper</div>
+                        <a href="profile.html">settings</a>
+                        <a href="#">log out</a>
+                      </div>
+                    </div>
+                </script>
+            </div>
+            <div class="c5 pl">
+                <p class="note">Не авторизован (остальные страницы)</p>
+                <script type="snippet" lang="html" scale="62">
+                    <div class="user-block ms-auto
+                                d-flex gap-2">
+                      <a href="login.html"
+                         class="btn btn-outline-primary">
+                        Войти
+                      </a>
+                      <a href="signup.html"
+                         class="btn btn-primary">
+                        Регистрация
+                      </a>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Немного своего CSS</h2>
+        <script type="snippet" lang="css">
+            /* static/css/style.css */
+            .logo {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--bs-body-color);
+                text-decoration: none;
+            }
+            .header-search {
+                flex: 1 1 240px; /* не уже 240px, иначе перенос */
+            }
+            .avatar {
+                object-fit: cover; /* фото не искажается */
+            }
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 4. Sidebar</h2>
+        <div class="lr">
+            <div class="c6">
+                <script type="snippet" lang="html" scale="62">
+                    <aside class="col-12 col-lg-4">
+                      <section class="mb-4">
+                        <h2 class="h4">Popular Tags</h2>
+                        <div class="d-flex flex-wrap gap-2">
+                          <a href="tag.html"
+                             class="badge text-bg-primary">python</a>
+                          <a href="tag.html"
+                             class="badge text-bg-success">django</a>
+                        </div>
+                      </section>
+                      <section>
+                        <h2 class="h4">Best Members</h2>
+                        <ul class="list-unstyled">
+                          <li><a href="#">Mr. Freeman</a></li>
+                          <li><a href="#">Dr. House</a></li>
+                        </ul>
+                      </section>
+                    </aside>
+                </script>
+            </div>
+            <div class="c4 pl sm">
+                <ul>
+                    <li>Заголовки блоков — <code>h2</code> с классом <code>.h4</code>: семантика отдельно, размер отдельно</li>
+                    <li>Теги — ссылки на страницу тега</li>
+                    <li>Разные цвета тегов — <code>text-bg-*</code></li>
+                </ul>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 5. Footer, title, favicon</h2>
+        <script type="snippet" lang="html">
+            <footer class="border-top mt-auto py-3 bg-light">
+              <div class="container small text-muted">
+                © 2026 AskPupkin — вопросы и ответы
+              </div>
+            </footer>
+        </script>
+        <ul class="sm">
+            <li><code>&lt;title&gt;</code> — у каждой страницы свой и осмысленный: «AskPupkin — новые вопросы», «Задать вопрос — AskPupkin»</li>
+            <li>Favicon — <code>favicon.svg</code> (или <code>.ico</code> / <code>.png</code> 32×32) в <code>static/img/</code>, подключён в <code>&lt;head&gt;</code></li>
+            <li>Проверяем, что footer внизу, даже когда вопросов мало</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Переходим к index.html</h2>
+        <div class="lr">
+            <div class="c5">
+                <h3>Чистый HTML</h3>
+                <p class="note" style="margin: 0 0 6px">Копируем layout из <code>base.html</code> и наполняем <code>&lt;main&gt;</code></p>
+                <script type="snippet" lang="html" scale="62">
+                    <main class="col-12 col-lg-8">
+                      <div class="d-flex align-items-baseline
+                                  gap-3 mb-3">
+                        <h1 class="h3 mb-0">New Questions</h1>
+                        <a href="hot.html">Hot Questions</a>
+                      </div>
+                      <!-- карточки -->
+                      <!-- пагинатор -->
+                    </main>
+                </script>
+            </div>
+            <div class="c5 pl">
+                <h3>Django-шаблоны</h3>
+                <p class="note" style="margin: 0 0 6px">Наследуемся от базового</p>
+                <script type="snippet" lang="django" scale="62">
+                    {# base.html #}
+                    <main class="col-12 col-lg-8">
+                      {% block content %}
+                      {% endblock %}
+                    </main>
+
+                    {# index.html #}
+                    {% extends "base.html" %}
+                    {% block content %}
+                      ...
+                    {% endblock %}
+                </script>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 6. Карточка вопроса</h2>
+        <script type="snippet" lang="html" scale="80">
+            <article class="card mb-3">
+              <div class="card-body d-flex gap-3">
+                <div class="flex-shrink-0 text-center">
+                  <img src="static/img/avatar.jpg" alt="Аватар"
+                       width="64" height="64" class="rounded avatar">
+                  <!-- виджет лайков -->
+                </div>
+                <div class="question-body flex-grow-1">
+                  <!-- заголовок, текст, ответы, теги, время -->
+                </div>
+              </div>
+            </article>
+        </script>
+        <p class="note"><code>flex-shrink-0</code> — аватар не сжимается; <code>.question-body { min-width: 0 }</code> — текст не распирает карточку</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 6. Содержимое карточки</h2>
+        <script type="snippet" lang="html" scale="70">
+            <h2 class="h5 card-title">
+              <a href="question.html">How to build a moon park?</a>
+            </h2>
+            <p class="card-text text-muted text-break">
+              Guys, i have trouble with a moon park...
+            </p>
+            <div class="d-flex flex-wrap align-items-center gap-2 small">
+              <a href="question.html">Ответы (3)</a>
+              <span>Теги:</span>
+              <a href="tag.html" class="badge text-bg-secondary">bender</a>
+              <time datetime="2026-10-08T14:30"
+                    class="ms-auto text-muted">2 часа назад</time>
+            </div>
+        </script>
+        <p class="note"><code>&lt;time datetime&gt;</code> — машиночитаемая дата; <code>ms-auto</code> прижимает время вправо</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что должно получиться</h2>
+        <div class="x-demo" style="width: 640px">
+            <article class="x-card">
+                <div class="x-side">
+                    <div class="x-pic" role="img" aria-label="Аватар"></div>
+                    <div class="x-vote">
+                        <button class="x-btn x-btn-out-s active" aria-pressed="true">▲</button>
+                        <b>5</b>
+                        <button class="x-btn x-btn-out-d" aria-pressed="false">▼</button>
+                    </div>
+                </div>
+                <div class="x-body">
+                    <a class="x-title" href="#">How to build a moon park?</a>
+                    <p>Guys, i have trouble with a moon park. Can't find the black-jack...</p>
+                    <div class="x-meta">
+                        <a href="#">Ответы (3)</a>
+                        <span>Теги:</span>
+                        <a class="x-tag" href="#">black-jack</a>
+                        <a class="x-tag" href="#">bender</a>
+                        <span class="x-time">2 часа назад</span>
+                    </div>
+                </div>
+            </article>
+            <div style="height: 14px"></div>
+            <article class="x-card" style="width: 340px">
+                <div class="x-side">
+                    <div class="x-pic" role="img" aria-label="Аватар"></div>
+                    <div class="x-vote">
+                        <button class="x-btn x-btn-out-s" aria-pressed="false">▲</button>
+                        <b>0</b>
+                        <button class="x-btn x-btn-out-d" aria-pressed="false">▼</button>
+                    </div>
+                </div>
+                <div class="x-body">
+                    <a class="x-title" href="#">How to build a moon park?</a>
+                    <p>Guys, i have trouble with a moon park...</p>
+                    <div class="x-meta">
+                        <a href="#">Ответы (3)</a>
+                        <a class="x-tag" href="#">black-jack</a>
+                        <span class="x-time">2 часа назад</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <p class="note" style="margin-top: 10px">Сверху — десктоп, снизу — та же разметка на узком экране (375px)</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 7. Виджет лайков: 3 состояния</h2>
+        <div class="lr">
+            <div class="c7">
+                <script type="snippet" lang="html" scale="72">
+                    <div class="d-flex flex-column
+                                align-items-center gap-1">
+                      <button type="button"
+                              class="btn btn-sm btn-outline-success"
+                              aria-label="Нравится"
+                              aria-pressed="false">▲</button>
+                      <span class="fw-bold">5</span>
+                      <button type="button"
+                              class="btn btn-sm btn-outline-danger"
+                              aria-label="Не нравится"
+                              aria-pressed="false">▼</button>
+                    </div>
+                </script>
+            </div>
+            <div class="c3 pl x-demo">
+                <div style="display: flex; gap: 22px; margin-top: 10px">
+                    <div class="x-vote"><button class="x-btn x-btn-out-s" aria-pressed="false">▲</button><b>5</b><button class="x-btn x-btn-out-d" aria-pressed="false">▼</button></div>
+                    <div class="x-vote"><button class="x-btn x-btn-out-s active" aria-pressed="true">▲</button><b>6</b><button class="x-btn x-btn-out-d" aria-pressed="false">▼</button></div>
+                    <div class="x-vote"><button class="x-btn x-btn-out-s" aria-pressed="false">▲</button><b>4</b><button class="x-btn x-btn-out-d active" aria-pressed="true">▼</button></div>
+                </div>
+                <div class="x-label" style="display: flex; gap: 20px">
+                    <span>ничего</span><span>лайк</span><span>дизлайк</span>
+                </div>
+                <p class="note" style="margin-top: 12px">Нажатая кнопка: класс <code>active</code> и <code>aria-pressed="true"</code></p>
+            </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 8. Пагинатор</h2>
+        <div class="lr">
+        <div class="c6">
+        <script type="snippet" lang="html" scale="65">
+            <nav aria-label="Страницы вопросов">
+              <ul class="pagination flex-wrap">
+                <li class="page-item disabled">
+                  <span class="page-link">«</span>
+                </li>
+                <li class="page-item active"
+                    aria-current="page">
+                  <span class="page-link">1</span>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page=2">2</a>
+                </li>
+                <!-- 3, …, 53, » -->
+              </ul>
+            </nav>
+        </script>
+        </div>
+        <div class="c4 pl">
+        <p class="note" style="margin-bottom: 10px">Три состояния пункта: обычный, <code>active</code> (текущая страница), <code>disabled</code> («назад» на первой странице, многоточие)</p>
+        <div class="x-demo">
+            <div class="x-pag">
+                <span class="disabled">«</span>
+                <span class="active">1</span>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <span class="disabled">…</span>
+                <a href="#">53</a>
+                <a href="#">»</a>
+            </div>
+        </div>
+        </div>
+        </div>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Шаг 9. Проверяем адаптив</h2>
+        <p class="sm" style="margin-bottom: 8px">DevTools → Device toolbar (<b>Cmd/Ctrl+Shift+M</b>) → ширины <b>1200</b>, <b>768</b>, <b>375</b>:</p>
+        <ul class="sm">
+            <li>Header: логотип, поиск, кнопка и юзерблок не наезжают друг на друга</li>
+            <li>Sidebar уходит под (или над) основной колонкой</li>
+            <li>Нет горизонтального скролла</li>
+            <li>Карточки: аватар не сплющен, кнопки не вылезают, длинное слово не рвёт вёрстку</li>
+            <li>Пагинатор переносится, а не уезжает за край</li>
+            <li>Footer внизу, даже если контента мало</li>
+        </ul>
+        <p class="tip">Тест на прочность: вставьте в заголовок вопроса <code>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</code> и длинный URL.</p>
+    </div></section>
+
+    <!-- ================================================================ -->
+    <section class="slide shout"><div>
+        <h2>Типовые ошибки ДЗ 1</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Репозиторий и структура</h2>
+        <minus>Bootstrap и картинки подключены с CDN / из интернета</minus>
+        <plus>Вся статика в <code>public/static/{css,js,img}</code>, пути относительные</plus>
+        <minus>В репозитории <code>.idea/</code>, <code>.DS_Store</code>, <code>__pycache__/</code>, <code>node_modules/</code></minus>
+        <plus><code>.gitignore</code> создан до первого коммита</plus>
+        <minus>Коммиты прямо в <code>main</code>, PR без описания</minus>
+        <plus>Ветка → PR <code>hw-1</code> с описанием «что сделано» → ревью ментора</plus>
+        <minus>README пустой или «Hello world»</minus>
+        <plus>В README: как открыть вёрстку и список страниц</plus>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTML</h2>
+        <minus><code>&lt;title&gt;Document&lt;/title&gt;</code>, нет favicon, нет <code>meta viewport</code></minus>
+        <minus>Логотип, заголовок вопроса, теги — не ссылки; ASK! — <code>&lt;button&gt;</code> без перехода</minus>
+        <plus>Переход по странице — <code>&lt;a href&gt;</code>, действие — <code>&lt;button&gt;</code></plus>
+        <minus><code>&lt;img&gt;</code> без <code>alt</code> и размеров, аватары разной формы</minus>
+        <plus><code>alt</code>, <code>width</code>/<code>height</code>, <code>object-fit: cover</code></plus>
+        <minus>Повторяющиеся <code>id</code> в карточках, всё на <code>div</code></minus>
+        <plus>Классы для повторяющихся блоков, семантика: <code>header</code>, <code>main</code>, <code>aside</code>, <code>article</code>, <code>nav</code></plus>
+        <minus>Отступы через <code>&lt;br&gt;&lt;br&gt;</code> и <code>&amp;nbsp;&amp;nbsp;</code></minus>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>CSS и Bootstrap</h2>
+        <minus>Везде <code>style="margin-left: 37px"</code></minus>
+        <plus>Утилиты Bootstrap (<code>ms-3</code>, <code>gap-2</code>) или класс в <code>style.css</code></plus>
+        <minus><code>!important</code> на каждой строке, чтобы перебить Bootstrap</minus>
+        <plus>Свой CSS после Bootstrap + свой класс</plus>
+        <minus>Правки прямо в <code>bootstrap.min.css</code></minus>
+        <minus><code>.row</code> без <code>.container</code>, контент прямо в <code>.row</code>, сумма колонок &gt; 12</minus>
+        <plus><code>container → row → col</code>, всегда</plus>
+        <minus>Фиксированные <code>width: 1200px</code>, <code>height</code> у блоков с текстом</minus>
+        <plus><code>max-width</code>, колонки сетки, высота — по содержимому</plus>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Адаптив и «мелочи»</h2>
+        <minus>На 375px шапка разъезжается или появляется горизонтальный скролл</minus>
+        <plus><code>flex-wrap</code> + <code>gap</code> + <code>flex-basis</code> у поиска</plus>
+        <minus>Длинное слово растягивает карточку на всю страницу</minus>
+        <plus><code>min-width: 0</code> у flex-элемента, <code>text-break</code></plus>
+        <minus>Footer висит посередине экрана или <code>position: fixed</code> закрывает контент</minus>
+        <plus><code>min-vh-100 d-flex flex-column</code> + <code>mt-auto</code></plus>
+        <minus>У лайков одно состояние, у пагинатора нет активной страницы</minus>
+        <plus>Все состояния свёрстаны и видны в макете</plus>
+        <minus>Блоки «слиплись» или отступы везде разные</minus>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Чек-лист перед PR</h2>
+        <ul class="sm">
+            <li>Репозиторий назван по формату, менторы приглашены, <code>main</code> защищён</li>
+            <li>PR <code>hw-1</code> с описанием, в diff нет мусора</li>
+            <li><code>public/</code>: base, index, question, ask, login, signup, profile</li>
+            <li>Статика локально, Bootstrap не с CDN</li>
+            <li>title + favicon на всех страницах</li>
+            <li>Header: логотип-ссылка, поиск, ASK!, юзерблок в двух состояниях</li>
+            <li>Sidebar: Popular Tags + Best Members; footer внизу</li>
+            <li>Карточки, лайки (3 состояния), пагинатор с активной страницей</li>
+            <li>Проверено на 1200 / 768 / 375 без горизонтального скролла</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Полезные ссылки</h2>
+        <ul class="sm">
+            <li>Bootstrap 5.3: <a href="https://getbootstrap.com/docs/5.3/layout/grid/">сетка</a>, <a href="https://getbootstrap.com/docs/5.3/utilities/spacing/">утилиты</a>, <a href="https://getbootstrap.com/docs/5.3/components/">компоненты</a>, <a href="https://getbootstrap.com/docs/5.3/forms/overview/">формы</a></li>
+            <li>Справочник CSS: <a href="https://developer.mozilla.org/ru/docs/Web/CSS">MDN</a>, <a href="https://doka.guide/css/">Дока</a></li>
+            <li>Тренажёр Flexbox: <a href="https://flexboxfroggy.com/#ru">flexboxfroggy.com</a></li>
+            <li>Тренажёр Grid: <a href="https://cssgridgarden.com/#ru">cssgridgarden.com</a></li>
+            <li>Тренажёр селекторов: <a href="https://flukeout.github.io/">CSS Diner</a></li>
+            <li>Калькулятор специфичности: <a href="https://specificity.keegan.st/">specificity.keegan.st</a></li>
+            <li>Задание: <code>homeworks/markdown/task-1.md</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>Вопросы?</h2>
+    </div></section>
+
+    <div class="progress"><div></div></div>
+    <script src="../../lectures/static/js/highlight.pack.js"></script>
+    <script src="../../lectures/static/node_modules/shower-core/shower.min.js"></script>
+    <script src="../../lectures/static/js/init.js"></script>
+</body>
+</html>
