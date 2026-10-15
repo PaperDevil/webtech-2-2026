@@ -1,0 +1,627 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Web технологии - DNS, TLS, HTTP</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=792, user-scalable=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../static/node_modules/shower-bright/styles/screen.css">
+    <link rel="stylesheet" href="../../static/css/highlight/github.css">
+    <link rel="stylesheet" href="../../static/css/index.css">
+</head>
+<body class="list">
+    <header class="caption">
+        <h1>Web технологии</h1>
+    </header>
+
+    <section class="slide"><div>
+        <h2>Преподаватель</h2>
+        <ul>
+              <li><b>Данил Максимович</b></li>
+                <li>Разработчик VK Education & VK Internship</li>
+        </ul>
+      <h3>Контакты</h3>
+      <ul>
+          <li>Telegram: <a href="https://ketovx.t.me">https://ketovx.t.me</a></li>
+          <li>Почта: <a href="mailto:danil.gorev@vk.team">danil.gorev@vk.team</a></li>
+      </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>DNS, TLS, HTTP</h2>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>Как происходит HTTP запрос ?</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как происходит HTTP запрос ?</h2>
+        <ul>
+            <li>Браузер анализирует введенный URL и извлекает имя хоста</li>
+            <li>Используя систему DNS, браузер преобразует домен в ip адрес</li>
+            <li>Устанавливает TCP соединение с web-сервером</li>
+            <li>Если протокол https, устанавливает TLS соединение поверх TCP</li>
+            <li>Формирует HTTP запрос, отправляет его, HTTP ответ</li>
+            <li>Браузер закрывает соединение (для HTTP/1.0)</li>
+            <li>Далее процесс парсинга и отображения документа ...</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-5/pictures/stack.png" class="place" >
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>DNS</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Domain Name System</h2>
+        <p>DNS - это распределенная база данных, хранящая информацию о доменах, в первую очередь
+           отображение доменных имен на IP адреса машин, обслуживающих эти домены</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пространство доменных имен</h2>
+        <img src="../lesson-5/pictures/domains.png" >
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Домены и зоны</h2>
+        <p>База DNS разделена на <b>зоны</b>. Каждая зона находится под единым административным контролем.
+           Проще говоря обслуживается одной организацией.</p>
+        <p>Хранение информации о доменах более высокого уровня может быть <b>делегировано</b> другим зонам.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-5/pictures/zones.png" class="place" >
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-5/pictures/dnsreq.png" class="place" >
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что содержит зона DNS сервера ?</h2>
+        <ul>
+            <li>A - IPv4 адрес(а) для данного домена</li>
+            <li>AAAA - IPv6 адрес(а)</li>
+            <li>NS - адрес(a) DNS серверов обслуживающих данную зону</li>
+            <li>MX - адрес(а) почтовых серверов для данного домена</li>
+            <li>TXT - текстовая информация о домене</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <script type="snippet" lang="bash">
+            ➜  ~ dig google.com
+            ; <<>> DiG 9.10.6 <<>> google.com
+            ;; global options: +cmd
+            ;; Got answer:
+            ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13042
+            ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+            ;; OPT PSEUDOSECTION:
+            ; EDNS: version: 0, flags:; udp: 1232
+            ;; QUESTION SECTION:
+            ;google.com.			IN	A
+
+            ;; ANSWER SECTION:
+            google.com.		184	IN	A	216.58.209.206
+
+            ;; Query time: 1541 msec
+            ;; SERVER: 1.1.1.1#53(1.1.1.1)
+            ;; WHEN: Tue Mar 10 17:28:06 MSK 2026
+            ;; MSG SIZE  rcvd: 55
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Заголовки DNS запроса</h2>
+        <script type="snippet" lang="bash">
+            ;; Got answer:
+            ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13042
+        </script>
+        <ul>
+            <li>opcode: QUERY - Запрос за информацией (не обновление)</li>
+            <li>status: NOERROR - Успешно найденный IP (NXDOMAIN, SERVFAIL, REFUSED)</li>
+            <li>id: 13042 - Идентификатор транзакции</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ответ на DNS запрос</h2>
+        <script type="snippet" lang="bash">
+            ;; ANSWER SECTION:
+            google.com.		184	IN	A	216.58.209.206
+        </script>
+        <ul>
+            <li>google.com - Запрашиваемый домен</li>
+            <li>184 — TTL (Time To Live) Время хранение кэша</li>
+            <li>216.58.209.206 - непосредственно сам IPv4-адрес</li>
+        </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>TCP</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Зачем нужен TCP ?</h2>
+        <p>TCP - протокол, обеспечивающий надежную последовательную доставку данных.
+        Фактически, TCP предоставляет интерфейс, похожий на файловый ввод/вывод для сетевых соединений.</p>
+        <ul>
+            <li>Надежная доставка</li>
+            <li>Полнодуплексная передача</li>
+            <li>Контроль потока - защита от переполнения</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>TCP порты</h2>
+        <p>TCP порт - это &laquo;адрес&raquo; сетевого соединения в пределах одного хоста.
+            TCP порты позволяют поддерживать множество открытых соединений на одной машине.</p>
+        <p>Номер порта - целое число, не больше 65535. Порты ниже 1024 требуют
+            привилегий суперпользователя для использования.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Стандартные TCP порты</h2>
+        <ul>
+            <li>20, 21 - FTP</li>
+            <li>22 - SSH</li>
+            <li>25 - SMTP</li>
+            <li>80 - HTTP</li>
+            <li>443 - HTTPS</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Установление TCP соединения</h2>
+        <img src="../lesson-5/pictures/tcp.png">
+    </div></section>
+
+<!--    <section class="slide"><div>-->
+<!--        <h2>Структура заголовка</h2>-->
+<!--        <img src="../lesson-5/pictures/tcp_header.png">-->
+<!--    </div></section>-->
+
+<!--    <section class="slide"><div>-->
+<!--        <h2>Флаги заголовка</h2>-->
+<!--        <ul>-->
+<!--            <li><b>URG</b>&nbsp;— поле «Указатель важности»</li>-->
+<!--            <li><b>ACK</b>&nbsp;— поле «Номер подтверждения»</li>-->
+<!--            <li><b>PSH</b>&nbsp;— пуш данных в приложение пользователя</li>-->
+<!--            <li><b>RST</b>&nbsp;— оборвать соединения, сбросить буфер (очистка буфера)</li>-->
+<!--            <li><b>SYN</b>&nbsp;— синхронизация номеров последовательности</li>-->
+<!--            <li><b>FIN</b>&nbsp;— завершение соединения</li>-->
+<!--        </ul>-->
+<!--    </div></section>-->
+
+
+    <section class="slide"><div>
+        <h2>Пример TCP клиента</h2>
+        <script type="snippet" lang="python">
+            import socket
+            req = b'Hello tcp!'
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect(('127.0.0.1', 1234))
+            s.send(req)
+            rsp = s.recv(1024)
+            s.close()
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример TCP сервера</h2>
+        <script type="snippet" lang="python">
+            import socket
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.bind(('127.0.0.1', 1234))
+            s.listen(10)
+            while True:
+                conn, addr = s.accept()
+                while True:
+                    data = conn.recv(1024)
+                    if not data: break
+                    conn.send(data)
+                conn.close()
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как правильно читать данные из сокета ?</h2>
+        <script type="snippet" lang="python">
+            def myreceive(sock, msglen):
+                msg = b''
+                while len(msg) < msglen:
+                    chunk = sock.recv(msglen-len(msg))
+                    if chunk == b'':
+                        raise RuntimeError('broken')
+                    msg = msg + chunk
+                return msg
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как правильно записывать данные в сокет ?</h2>
+        <script type="snippet" lang="python">
+            def mysend(sock, msg):
+                totalsent = 0
+                while totalsent < len(msg):
+                    sent = sock.send(msg[totalsent:])
+                    if sent == 0:
+                        raise RuntimeError('broken')
+                    totalsent = totalsent + sent
+        </script>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>UDP</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>UDP — минималистичный протокол</h2>
+        <p><b>UDP (User Datagram Protocol)</b> — это транспортный протокол, который предоставляет абсолютный минимум поверх IP.</p>
+        <p><b>Его философия:</b></p>
+        <ul>
+            <li>«Отправил и забыл»</li>
+            <li>Максимальная скорость, минимальная задержка</li>
+            <li>Нет никаких гарантий</li>
+        </ul>
+        <p><b>Ключевое отличие:</b> В UDP нет номеров пакетов, подтверждений, контроля перегрузки и установления соединения.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Где используется UDP?</h2>
+        <p>UDP незаменим там, где важна минимальная задержка (low latency)</p>
+        <ul>
+            <li><b>DNS-запросы</b> - Установка TCP-соединения для такого малого объёма данных заняла бы больше времени, чем сам запрос</li>
+            <li><b>Голосовая связь и VoIP</b> - Лучше услышать небольшой пропуск, чем задержку и буферизацию</li>
+            <li><b>Видеотрансляции</b> - Остановка и ожидание потерянных пакетов (как в TCP) приведут к «зависанию» картинки</li>
+            <li><b>Онлайн-игры</b> - Критически важна минимальная задержка (ping)</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>TCP vs UDP</h2>
+        <table>
+            <tr>
+                <th><b>TCP (Надёжный)</b></th>
+                <th><b>UDP (Быстрый)</b></th>
+            </tr>
+            <tr>
+                <td>✅ Переотправляет потерянные пакеты</td>
+                <td>❌ Отправил и забыл</td>
+            </tr>
+            <tr>
+                <td>✅ Пакеты в правильном порядке</td>
+                <td>❌ Могут прийти как угодно</td>
+            </tr>
+            <tr>
+                <td>✅ «Тормозит» при проблемах</td>
+                <td>❌ «Газ в пол», даже если сеть «легла»</td>
+            </tr>
+            <tr>
+                <td>✅ Three-way handshake</td>
+                <td>❌ Нет — сразу данные</td>
+            </tr>
+        </table>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>iperf3 - инструмент тестирования</h2>
+        <p><b>iperf3</b> - утилита для измерения пропускной способности сети и тестирования производительности TCP/UDP соединений.</p>
+        <p><b>Запуск сервера:</b></p>
+        <script type="snippet" lang="bash">
+            # Запуск сервера на порту 5201
+            $ iperf3 -s
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <p><b>Тест TCP соединения (клиент):</b></p>
+        <script type="snippet" lang="bash">
+            # Тест пропускной способности TCP
+            $ iperf3 -c 192.168.1.100 -t 10
+        </script>
+        <p><b>Тест UDP соединения (клиент):</b></p>
+        <script type="snippet" lang="bash">
+            # Тест UDP с пропускной способностью 100 Мбит/с
+            $ iperf3 -c 192.168.1.100 -u -b 100M
+        </script>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>TLS</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>TLS - Transport Layer Security</h2>
+        <p>TLS (а ранее SSL) - криптографический протокол, обеспечивающий безопасную передачу данных между хостами в Internet.</p>
+        <ul>
+            <li>Аутентификация сервера (и клиента)</li>
+            <li>Шифрование и сжатие передаваемой информации</li>
+            <li>Защита от подмены и проверка целостности сообщений</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Установление TLS соединения</h2>
+        <img src="../lesson-5/pictures/tls.png">
+    </div></section>
+
+    <section class="slide"><div>
+        <ul>
+            <li>ClientHello - клиент указывает желаемые опции соединения</li>
+            <li>ServerHello - сервер подтверждает опции соединения</li>
+            <li>Certificate - сервер посылает клиенту свой сертификат</li>
+            <li>Клиент проверяет сертификат. <br>На данном этапе соединение может быть отклонено</li>
+            <li>ClientKeyExchange - клиент отправляет серверу ключ симметричного шифрования (или параметры для его генерации)</li>
+            <li>Finished - сервер подтверждает завершение рукопожатия</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Неутешительный вывод</h2>
+        <p>Установление TCP и TLS соединения требует существенного времени. Минимум 1 RTT для TCP соединения и 1-2 RTT для TLS соединения.</p>
+        <p>Под RTT понимается Round Trip Time - время, необходимое для передачи IP дейтаграммы к серверу и обратно.</p>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>HTTP</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Какие задачи решает HTTP?</h2>
+        <ul>
+            <li>Передача документов</li>
+            <li>Передача мета-информации</li>
+            <li>Авторизация</li>
+            <li>Поддержка сессий</li>
+            <li>Кеширование документов</li>
+            <li>Согласование содержимого (negotiation)</li>
+            <li>Управление соединением</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-6/pictures/netflow.png" class="place"/>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ключевые особенности HTTP/1.1</h2>
+        <ul>
+            <li>Работает поверх TCP/TLS</li>
+            <li>Протокол запрос-ответ</li>
+            <li>Не поддерживает состояние (соединение) - <b>stateless</b></li>
+            <li><b>Текстовый</b> протокол</li>
+            <li>Расширяемый протокол</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP/1.0 запрос</h2>
+        <script type="snippet" lang="plain">
+            GET http://www.ru/robots.txt HTTP/1.0
+            Accept: text/html, text/plain
+            User-Agent: curl/7.64.1
+            If-Modified-Since: Fri, 24 Jul 2015 22:53:05 GMT
+        </script>
+        <p>Перевод строки - <code>\r\n</code></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP/1.1 запрос</h2>
+        <script type="snippet" lang="plain">
+            GET /robots.txt HTTP/1.1
+            Accept: text/html,application/xhtml+xml
+            Accept-Encoding: gzip, deflate
+            Cache-Control: max-age=0
+            Connection: keep-alive
+            Host: www.ru
+            User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP/1.1 ответ</h2>
+        <script type="snippet" lang="plain">
+            HTTP/1.1 404 Not Found
+            Server: nginx/1.5.7
+            Date: Wed, 06 Mar 2024 09:17:03 GMT
+            Content-Type: text/html; charset=iso-8859-1
+            Connection: close
+
+            <!DOCTYPE html>
+            <HTML><HEAD>...
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP запрос состоит из</h2>
+        <ul>
+            <li>строка запроса
+                <ul>
+                    <li>метод</li>
+                    <li>URL документа</li>
+                    <li>версия</li>
+                </ul>
+            </li>
+            <li>заголовки</li>
+            <li>тело запроса</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP методы</h2>
+        <ul>
+            <li><b>GET</b> - получение документа</li>
+            <li><b>HEAD</b> - получение только заголовков</li>
+            <li><b>POST</b> - отправка данных на сервер</li>
+            <li>PUT - отправка документа на сервер (*)</li>
+            <li>DELETE - удаление документа (*)</li>
+            <li>CONNECT, TRACE, OPTIONS - используются редко (*)</li>
+            <li>COPY, MOVE, MKCOL - расширения WebDAV (*)</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP ответ состоит из</h2>
+        <ul>
+            <li>строка ответа
+                <ul>
+                    <li>версия</li>
+                    <li>код ответа</li>
+                    <li>текстовое описание кода ответа</li>
+                </ul>
+            </li>
+            <li>заголовки</li>
+            <li>тела ответа - документ</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP коды ответа</h2>
+        <ul>
+            <li>1xx - информационные</li>
+            <li>2xx - успешное выполнение</li>
+            <li>3xx - перенаправления</li>
+            <li>4xx - ошибка на стороне клиента</li>
+            <li>5xx - ошибка на стороне сервера</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP коды ответа (1)</h2>
+        <ul>
+            <li>200 OK - запрос успешно выполнен</li>
+            <li>204 No Content - запрос успешно выполнен, но документ пуст</li>
+            <li>301 Moved Permanently - документ сменил URL</li>
+            <li>302 Found - повторить запрос по другому URL</li>
+            <li>304 Not Modified - документ не изменился, использовать кеш</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP коды ответа (2)</h2>
+        <ul>
+            <li>400 Bad Request - неправильный синтаксис запроса</li>
+            <li>401 Unauthorized - требуется авторизация</li>
+            <li>403 Forbidden - нет доступа (неверная авторизация)</li>
+            <li>404 Not Found - документ не найден</li>
+            <li>500 Internal Server Error - неожиданная ошибка сервера (application)</li>
+            <li>502 Bad Gateway - проксируемый сервер отвечает с ошибкой</li>
+            <li>504 Gateway Timeout - проксируемый сервер не отвечает</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Заголовки HTTP (общие)</h2>
+        <p>Для управления соединением и форматом сообщения (документа)</p>
+        <ul>
+            <li>Content-Type - MIME тип документа</li>
+            <li>Content-Length - длина сообщения</li>
+            <li>Content-Encoding - кодирование документа, например gzip-сжатие</li>
+            <li>Transfer-Encoding - формат передачи, например, chunked</li>
+            <li>Connection - управление соединением</li>
+            <li>Upgrade - смена протокола</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Заголовки HTTP запросов</h2>
+        <ul>
+            <li>Authorization - авторизация, чаще всего логин/пароль</li>
+            <li>Cookie - передача состояния (сессии) на сервер</li>
+            <li>Referer - URL предыдущего документа, контекст запроса</li>
+            <li>User-Agent - описание web-клиента, версия браузера</li>
+            <li>If-Modified-Since - условный GET запрос</li>
+            <li>Accept-* - согласование (negotiation) содержимого</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Заголовки HTTP ответов</h2>
+        <ul>
+            <li>Location - новый URL документа при перенаправлениях</li>
+            <li>Set-Cookie - установка состояния (сессии) в браузере</li>
+            <li>Last-Modified - дата последнего изменения документа</li>
+            <li>Date - Дата на сервере, для согласования кешей</li>
+            <li>Server - описание web-сервера, название и версия</li>
+        </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>HTTP/1.1 управление соединением</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-6/pictures/netflow2.png" class="place"/>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Общие принципы</h2>
+        <p>Протокол HTTP/1.0 предполагает закрытие TCP соединения сразу после ответа сервера.</p>
+        <p>Протокол HTTP/1.1 предполагает удержание TCP соединения, если не было заголовка <code>Connection: close</code>.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Логика управления в HTTP/1.1</h2>
+        <p>Соединение должно быть закрыто, если:</p>
+        <ul>
+            <li>cервер или клиент использует HTTP младше 1.1</li>
+            <li>cервер или клиент передал заголовок <code>Connection: close</code></li>
+            <li>по истечении таймаута (обычно небольшой, около 10с)</li>
+        </ul>
+        <p>Иначе соединение остается открытым для последующих запросов.</li>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Head-of-line blocking HTTP/1.1</h2>
+        <img src="../lesson-6/pictures/netflow2.png" class="place" style="height: 400px;margin-top: 50px;"/>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>HTTP/2</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ключевые особенности HTTP/2</h2>
+        <ul>
+            <li>Бинарный протокол</li>
+            <li>Мультиплексирование запросов в одном TCP соединении</li>
+            <li>Приоритезация ресурсов</li>
+            <li>Сжатие заголовков</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Head-of-line blocking HTTP/2</h2>
+        <img src="../lesson-6/pictures/http2_problem.jpg" style="height: 300px" class="place"/>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>HTTP/3</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ключевые особенности HTTP/3</h2>
+        <ul>
+            <li>Использует UDP (отказ от TCP)</li>
+            <li>Использует новый протокол QUIC</li>
+            <li>Мультиплексирование запросов на транспортном уровне</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-6/pictures/http2-3.jpeg" style="height: 520px" class="place"/>
+    </div></section>
+
+    <div class="progress"><div></div></div>
+    <script src="../../static/js/highlight.pack.js"></script>
+    <script src="../../static/node_modules/shower-core/shower.min.js"></script>
+    <script src="../../static/js/init.js"></script>
+</body>
+</html>

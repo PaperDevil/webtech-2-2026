@@ -1,0 +1,1089 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+    <title>Web технологии. Лекция 1: Введение в Web</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=792, user-scalable=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../static/node_modules/shower-bright/styles/screen.css">
+    <link rel="stylesheet" href="../../static/css/highlight/github.css">
+    <link rel="stylesheet" href="../../static/css/index.css">
+</head>
+<body class="list">
+    <header class="caption">
+        <h1>Web технологии. Лекция 1: Введение в Web</h1>
+        <p><a href="https://education.vk.company/profile/e4e86t/">@ketovx</a></p>
+    </header>
+
+    <section class="slide shout"><div>
+        <h2>Web технологии</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Преподаватель</h2>
+        <ul>
+              <li><b>Данил Максимович</b></li>
+                <li>Разработчик VK Education & VK Internship</li>
+        </ul>
+      <h3>Контакты</h3>
+      <ul>
+          <li>Telegram: <a href="https://ketovx.t.me">https://ketovx.t.me</a></li>
+          <li>Почта: <a href="mailto:danil.gorev@vk.team">danil.gorev@vk.team</a></li>
+      </ul>
+    </div></section>
+
+    <!-- РАЗДЕЛ 0: О курсе -->
+    <section class="slide"><div>
+        <h2>О чём этот курс?</h2>
+        <ul>
+            <li>Как устроен Web: от сети до браузера</li>
+            <li>Протокол HTTP и клиент-серверное взаимодействие</li>
+            <li>Архитектура backend: web- и application-сервера</li>
+            <li>Разработка web-приложений на Python и Django</li>
+            <li>Базы данных, авторизация, AJAX, real-time, кеширование, Docker</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>План лекций</h2>
+        <ol>
+            <li>Введение в Web: Internet, WWW, URL, HTML <b>← мы здесь</b></li>
+            <li>DNS, TCP, TLS, HTTP</li>
+            <li>Web-сервера, Nginx, application-сервера</li>
+            <li>Web-приложения, Django: URLs, Views, Templates</li>
+            <li>Реляционные базы данных, Django Models</li>
+            <li>Типичные сценарии, Django Forms, авторизация</li>
+            <li>AJAX, CORS, real-time, фоновые задачи, Docker</li>
+        </ol>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что понадобится?</h2>
+        <ul>
+            <li>Общие навыки программирования</li>
+            <li>Python на базовом уровне</li>
+            <li>Linux и командная строка на уровне пользователя</li>
+            <li>Git и GitHub: все домашние задания сдаются через Pull Request</li>
+        </ul>
+        <p><b>ДЗ 1</b> — статическая вёрстка сайта на HTML и CSS.
+           Всё, что нужно для старта, — в этой лекции.</p>
+    </div></section>
+
+    <!-- РАЗДЕЛ 1: Web-технологии и Интернет -->
+    <section class="slide shout"><div>
+        <h2>Internet и WWW</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Internet</h2>
+        <p>Internet — глобальная <b>сеть сетей</b>: тысячи независимых сетей,
+           договорившихся об общих протоколах передачи данных</p>
+        <ul>
+            <li>Нет единого центра управления</li>
+            <li>Данные передаются небольшими порциями — <b>пакетами</b></li>
+            <li>Объединяет разнородные сети: Ethernet, Wi-Fi, LTE, оптику, спутники</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Стек протоколов</h2>
+        <ul>
+            <li><b>Прикладной:</b> HTTP, DNS — смысл данных</li>
+            <li><b>Защита:</b> TLS — шифрование (HTTPS = HTTP + TLS)</li>
+            <li><b>Транспортный:</b> TCP — надёжная доставка, UDP — быстрая</li>
+            <li><b>Сетевой:</b> IP — глобальная адресация и маршрутизация</li>
+            <li><b>Канальный:</b> Ethernet, Wi-Fi — передача в локальной сети</li>
+        </ul>
+        <p><small>Подробно DNS, TCP, TLS и HTTP — в лекции 2</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ethernet</h2>
+        <ul>
+            <li>Технология локальных сетей (LAN)</li>
+            <li>Работает на канальном уровне (Data Link Layer)</li>
+            <li>MAC-адреса (48 бит) для идентификации устройств: <code>00:1A:2B:3C:4D:5E</code></li>
+            <li>Скорости: 10 Мбит/с → 100 Мбит/с → 1 Гбит/с → 10 Гбит/с → 100+ Гбит/с в дата-центрах</li>
+            <li>Основа для построения офисных и домашних сетей</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>IP - Internet Protocol</h2>
+        <ul>
+            <li>Обеспечивает адресацию узлов в сети</li>
+            <li>IPv4: адреса вида 192.168.1.1 (32 бита)</li>
+            <li>IPv6: адреса вида 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (128 бит)</li>
+            <li>Маршрутизация пакетов между сетями</li>
+            <li>Работает поверх канального уровня (Wi-Fi, LTE, Ethernet)</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div class="">
+        <h2>IPv4 - Internet Protocol version 4</h2>
+        <ul>
+            <li>32 бита, разделенные на 4 октета (десятичные числа от 0 до 255)</li>
+            <li>Всего доступно (около 4,29 миллиарда) адресов</li>
+        </ul>
+        <div>
+            <b>NAT (Network Address Translation)</b> — технология, преобразующая приватные IP-адреса локальной сети во внешние (публичные) для доступа в интернет, позволяя множеству устройств работать через один IP.
+        </div>
+    </div></section>
+
+    <section class="slide"><div class="">
+        <h2>IPv6 - Internet Protocol version 6</h2>
+        <ul>
+            <li>Использует шестнадцатеричные числа, разделенные двоеточием</li>
+            <li>Поддержка IPsec рекомендательного характера</li>
+            <li>Упрощённые заголовки пакетов, которые проще и быстрее обрабатывать</li>
+            <li>340 ундециллионов адресов:<br>
+                <small>340 282 366 920 938 463 463 374 607 431 768 211 456 комбинаций</small></li>
+        </ul>
+        <p>Внедрение идёт медленно — IPv4 живёт благодаря NAT.<br>
+           <a href="https://www.google.com/intl/en/ipv6/statistics.html">Доля пользователей Google с IPv6</a></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>DHCP - Dynamic Host Configuration Protocol</h2>
+        <ul>
+            <li>Discover - широковещательный поиск серверов</li>
+            <li>Offer - сервер предлагает возможные настройки</li>
+            <li>Request - клиент принимает предложение конкретного сервера</li>
+            <li>Acknowledge - сервер подтверждает новые настройки</li>
+        </ul>
+
+        <p>Выдаёт IP, маску, шлюз и DNS-серверы, исключает дублирование адресов.
+           Постоянный IP — резервирование по MAC-адресу (static lease).</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>DNS - Domain Name System</h2>
+        <ul>
+            <li>Преобразует доменные имена в IP-адреса</li>
+            <li>Пример: google.com → 142.250.185.78</li>
+            <li>Иерархическая структура доменов</li>
+            <li>Распределенная база данных</li>
+            <li>Кеширование для повышения производительности</li>
+        </ul>
+        <p>Проверить самому: <code>nslookup google.com</code> или <code>dig google.com</code></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>World Wide Web</h2>
+        <p>WWW - множество <b>взаимосвязанных документов</b>, располагающихся на машинах подключенных к Internet</p>
+        <p>WWW - набор протоколов, серверного и клиентского ПО, позволяющих получать доступ к документам</p>
+        <p><b>Internet ≠ WWW.</b> Internet — это сеть, а WWW — лишь один из сервисов поверх неё,
+           наряду с почтой, мессенджерами, онлайн-играми.
+           <small>WWW придумал Тим Бернерс-Ли в CERN (1989–1991).</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-1/pictures/hyperlinks.png" class="place" alt="Документы, связанные гиперссылками"/>
+    </div></section>
+
+    <!-- РАЗДЕЛ 2: URL и документы -->
+    <section class="slide shout"><div>
+        <h2>URL и документы</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>URL - Uniform Resource Locator</h2>
+        <code>http://server.org:8080/path/doc.html?a=1&amp;b=2#part1</code>
+        <ul>
+            <li><code>http</code> - схема (протокол)</li>
+            <li><code>server.org</code> - DNS имя сервера (или IP-адрес)</li>
+            <li><code>8080</code> - TCP порт; по умолчанию 80 для http и 443 для https</li>
+            <li><code>/path/doc.html</code> - путь к ресурсу (не обязательно файл на диске)</li>
+            <li><code>a=1&amp;b=2</code> - строка запроса (query string), параметры</li>
+            <li><code>part1</code> - фрагмент (якорь), положение на странице;
+                <b>на сервер не отправляется</b></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Кодирование URL</h2>
+        <p>Всё, кроме латиницы, цифр и служебных символов, кодируется
+           байтами UTF-8 в виде <code>%XX</code>:</p>
+        <ul>
+            <li>пробел → <code>%20</code> (в данных формы — <code>+</code>)</li>
+            <li><code>&amp;</code> внутри значения → <code>%26</code>, <code>#</code> → <code>%23</code></li>
+            <li><code>?q=веб</code> → <code>?q=%D0%B2%D0%B5%D0%B1</code></li>
+        </ul>
+        <p><small>Браузер показывает кириллицу, а по сети уходит закодированный вариант.
+           Домены вида <code>пример.рф</code> кодируются иначе — Punycode.</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Типы документов (MIME-типы)</h2>
+        <div class="lr">
+            <div class="c5">
+                <ul>
+                    <li>text/html</li>
+                    <li>text/css</li>
+                    <li>text/javascript</li>
+                    <li>image/png</li>
+                </ul>
+            </div>
+            <div class="c5">
+                <ul>
+                    <li>video/mp4</li>
+                    <li>text/xml</li>
+                    <li>application/json</li>
+                    <li><a href="https://www.iana.org/assignments/media-types/media-types.xhtml">Полный список MIME типов</a></li>
+                </ul>
+            </div>
+        </div>
+        <p><small>Тип документа сервер сообщает в HTTP-заголовке <code>Content-Type</code>.
+           Расширения файлов играют второстепенную роль</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Абсолютные и относительные URL</h2>
+        <ul>
+            <li><code>http://server.org/1.html</code> - абсолютный</li>
+            <li><code>//server.org/1.html</code> - относительный (схема берётся от текущего документа)</li>
+            <li><code>/another/page.html?a=1</code> - относительный (от корня сайта)</li>
+            <li><code>pictures/1.png</code> - относительный (от URL текущего документа)</li>
+            <li><code>../style.css</code> - относительный (на уровень выше)</li>
+            <li><code>?a=1&amp;b=2</code> - относительный (от URL текущего документа)</li>
+            <li><code>#part2</code> - относительный (в пределах текущего документа)</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Правила разрешения URL</h2>
+        <p><code>https://site.com/path/page.html</code> - основной документ</p>
+        <ul>
+            <li><code>http://wikipedia.org</code> = <code>http://wikipedia.org</code></li>
+            <li><code>//cdn.org/lib.js</code> = <code><b>https:</b>//cdn.org/lib.js</code></li>
+            <li><code>/admin/index.html</code> = <code><b>https://site.com</b>/admin/index.html</code></li>
+            <li><code>another.html</code> = <code><b>https://site.com/path/</b>another.html</code></li>
+            <li><code>../img/1.png</code> = <code><b>https://site.com/</b>img/1.png</code></li>
+            <li><code>?full=1</code> = <code><b>https://site.com/path/page.html</b>?full=1</code></li>
+            <li><code>#chapter2</code> = <code><b>https://site.com/path/page.html</b>#chapter2</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Ловушка: слэш в конце пути</h2>
+        <p>Путь отсчитывается от последнего <code>/</code> в URL документа:</p>
+        <ul>
+            <li><code>https://site.com/docs</code> + <code>intro.html</code>
+                = <code>https://site.com/<b>intro.html</b></code></li>
+            <li><code>https://site.com/docs/</code> + <code>intro.html</code>
+                = <code>https://site.com/docs/<b>intro.html</b></code></li>
+        </ul>
+        <p>Что реально запросил браузер — в DevTools → Network.</p>
+    </div></section>
+
+    <!-- РАЗДЕЛ 3: Клиент-серверная архитектура -->
+    <section class="slide shout"><div>
+        <h2>Клиент-серверная архитектура</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Клиент-серверная архитектура</h2>
+        <p>Web-клиенты работают на компьютерах конечных пользователей.
+           Задача Web-клиентов состоит в получении и отображении документов.</p>
+        <p>Web-сервера работают (как правило) на серверах в датацентрах.
+           Их задача заключается в хранении (или генерации) и отдачи документов.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-1/pictures/network.png" class="place" alt="Схема клиент-серверного взаимодействия"/>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Преимущества подхода</h2>
+        <ul>
+            <li>Открытый протокол</li>
+            <li>Стандартный клиент</li>
+            <li>Прозрачный способ взаимодействия приложений</li>
+            <li>Распределенная и масштабируемая система</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP — язык общения клиента и сервера</h2>
+        <p>Клиент отправляет <b>запрос</b>, сервер возвращает <b>ответ</b>. Это обычный текст:</p>
+        <div class="lr">
+            <div class="c5">
+                <script type="snippet" lang="http" scale="75">
+                    GET /path/doc.html?a=1 HTTP/1.1
+                    Host: server.org
+                    User-Agent: Firefox/140.0
+                    Accept: text/html
+                </script>
+            </div>
+            <div class="c5">
+                <script type="snippet" lang="http" scale="75">
+                    HTTP/1.1 200 OK
+                    Content-Type: text/html
+                    Content-Length: 1534
+
+                    <!DOCTYPE html>
+                    <html>...
+                </script>
+            </div>
+        </div>
+        <p><small>Обратите внимание: фрагмента <code>#part1</code> в запросе нет</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>HTTP: самое главное</h2>
+        <ul>
+            <li><b>Методы:</b> <code>GET</code> — получить, <code>POST</code> — отправить данные</li>
+            <li><b>Коды:</b> <code>2xx</code> успех, <code>3xx</code> редирект,
+                <code>4xx</code> ошибка клиента (404), <code>5xx</code> ошибка сервера</li>
+            <li><b>Заголовки:</b> <code>Host</code>, <code>Content-Type</code>, <code>Cookie</code></li>
+            <li><b>HTTPS</b> = HTTP + TLS: шифрование и проверка сервера</li>
+            <li><b>Stateless:</b> каждый запрос независим</li>
+        </ul>
+        <p><small>Подробно — в лекции 2</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что происходит, когда вы вводите URL?</h2>
+        <ol>
+            <li>Браузер разбирает URL: схема, хост, порт, путь</li>
+            <li><b>DNS</b>: имя хоста → IP-адрес</li>
+            <li><b>TCP</b>: соединение с сервером по IP и порту (+ <b>TLS</b> для https)</li>
+            <li><b>HTTP</b>: браузер отправляет запрос, сервер возвращает ответ</li>
+            <li>Браузер разбирает HTML и запрашивает CSS, JS, картинки — каждый по своему URL</li>
+            <li>Браузер отрисовывает страницу</li>
+        </ol>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Разновидности web-клиентов</h2>
+        <ul>
+            <li>Библиотеки в ЯП: libcurl, urllib, requests и т.д.</li>
+            <li>Консольные утилиты: wget, curl, telnet</li>
+            <li>Роботы: поисковики, вредоносные скрипты</li>
+            <li>Браузеры:
+                <ul>
+                    <li>Полноценные: Firefox, Chrome, Safari, Edge</li>
+                    <li>Встроенные: web-view, webkit и т.д.</li>
+                </ul>
+            </li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Как увидеть HTTP своими глазами</h2>
+        <ul>
+            <li><b>DevTools</b> в браузере (F12) → вкладка <b>Network</b>:
+                все запросы страницы, их заголовки, коды и время</li>
+            <li><b>curl</b> в терминале:<br>
+                <code>curl -v https://example.com/</code></li>
+            <li>Эхо-сервисы, которые возвращают ваш же запрос:<br>
+                <code>https://httpbin.org/get?a=1</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Сценарий работы web приложения</h2>
+        <ul>
+            <li>Пользователь вводит URL</li>
+            <li>Браузер загружает Web страницу - HTML документ</li>
+            <li>Браузер анализирует (parse) HTML и загружает доп. ресурсы</li>
+            <li>Браузер отображает (rendering) HTML страницу</li>
+            <li>Пользователь переходит по гиперссылке или отправляет форму</li>
+            <li>Цикл повторяется</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-2/pictures/classic_web.png" class="place" alt="Классическое web-приложение">
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Сценарий работы современного приложения</h2>
+        <ul>
+            <li>Браузер загружает Web страницу, ресурсы и отображает ее</li>
+            <li>JavaScript загружает данные с помощью AJAX запросов</li>
+            <li>JavaScript обеспечивает полноценный UI на странице</li>
+            <li>Пользователь взаимодействует с UI, что приводит к вызову JavaScript обработчиков</li>
+            <li>JavaScript обновляет данные на сервере или загружает новые данные, используя AJAX</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <img src="../lesson-2/pictures/modern_web.png" class="place" alt="Современное web-приложение">
+    </div></section>
+
+    <!-- РАЗДЕЛ 4: HTML -->
+    <section class="slide shout"><div>
+        <h2>HTML</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Из чего состоит HTML</h2>
+        <script type="snippet" lang="html">
+            <a href="/about" class="nav-link">О нас</a>
+        </script>
+        <ul>
+            <li><b>Элемент</b> = открывающий тег + содержимое + закрывающий тег</li>
+            <li><b>Атрибуты</b> (<code>href</code>, <code>class</code>) уточняют поведение элемента</li>
+            <li>Пустые элементы без закрывающего тега: <code>img</code>, <code>br</code>,
+                <code>input</code>, <code>meta</code>, <code>link</code></li>
+            <li>Элементы вкладываются друг в друга и образуют дерево (DOM)</li>
+            <li>Комментарий: <code>&lt;!-- не отображается --&gt;</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Структура документа</h2>
+        <script type="snippet" lang="html">
+            <!DOCTYPE html>
+            <html lang="ru">
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1">
+                <title>Страница</title>
+                <meta name="description" content="Сайт">
+                <link rel="stylesheet" href="./style.css">
+              </head>
+              <body>
+                <p class="article">...</p>
+                <script src="./script.js">&lt;/script&gt;
+              </body>
+            </html>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Теги верхнего уровня</h2>
+        <ul>
+            <li><code>&lt;!DOCTYPE html&gt;</code> - включает стандартный режим отображения</li>
+            <li><code>html</code> - обертка, атрибут <code>lang</code> задаёт язык страницы</li>
+            <li><code>head</code> - служебная информация о странице, не отображается</li>
+            <li><code>body</code> - тело страницы, то, что видит пользователь</li>
+        </ul>
+        <h3>Внутри head</h3>
+        <ul>
+            <li><code>meta charset</code> - кодировка, первым элементом в <code>head</code></li>
+            <li><code>meta viewport</code> - корректное отображение на телефонах</li>
+            <li><code>title</code> - заголовок вкладки и результата в поисковике</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Вложенность и валидность</h2>
+        <script type="snippet" lang="html">
+            <!-- Неправильно: теги пересекаются -->
+            <p>Текст <b>жирный</p></b>
+
+            <!-- Правильно -->
+            <p>Текст <b>жирный</b></p>
+        </script>
+        <ul>
+            <li>Браузер «прощает» ошибки и пытается угадать, что вы имели в виду, — каждый по-своему</li>
+            <li>Проверяйте разметку: <a href="https://validator.w3.org/">validator.w3.org</a></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Спецсимволы (HTML-сущности)</h2>
+        <p>Символы, которые входят в синтаксис HTML, записываются через сущности:</p>
+        <ul>
+            <li><code>&amp;lt;</code> → &lt; и <code>&amp;gt;</code> → &gt;</li>
+            <li><code>&amp;amp;</code> → &amp;</li>
+            <li><code>&amp;nbsp;</code> → неразрывный пробел</li>
+            <li><code>&amp;copy;</code> → &copy;</li>
+        </ul>
+        <p><small>Кириллицу кодировать не нужно при <code>charset="utf-8"</code></small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Блочные теги</h2>
+        <ul>
+            <li><code>h1</code> - <code>h6</code> - различные уровни заголовков</li>
+            <li><code>p</code> - разбиение текста на параграфы</li>
+            <li><code>hr</code> - горизонтальная линия</li>
+            <li><code>pre</code> - блок преформатированного кода</li>
+            <li><code>blockquote</code> - цитирование длинного блока текста</li>
+            <li><code>div</code> - абстрактный блочный контейнер</li>
+        </ul>
+        <p><small>Строго говоря, «блочный» и «строчный» — это поведение по умолчанию,
+           заданное в CSS (<code>display</code>), и его можно изменить</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Семантические теги</h2>
+        <ul>
+            <li><code>header</code> - шапка страницы или раздела</li>
+            <li><code>nav</code> - навигация</li>
+            <li><code>main</code> - основное содержимое (один на страницу)</li>
+            <li><code>section</code>, <code>article</code> - раздел, самостоятельная статья</li>
+            <li><code>aside</code> - дополнительный блок, сайдбар</li>
+            <li><code>footer</code> - подвал</li>
+        </ul>
+        <p><small>Выглядят как <code>div</code>, но сообщают <b>смысл</b> блока</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Строчные теги</h2>
+        <ul>
+            <li><code>a</code> - гиперссылки</li>
+            <li><code>strong</code> - важный текст; <code>b</code> - визуальное выделение без особого смысла</li>
+            <li><code>em</code> - смысловое ударение; <code>i</code> - термин, иностранное слово</li>
+            <li><code>img</code> - вставка изображений</li>
+            <li><code>br</code> - перенос строки</li>
+            <li><code>code</code> - фрагмент кода</li>
+            <li><code>sub</code>, <code>sup</code> - нижний и верхний индекс</li>
+            <li><code>span</code> - абстрактный строчный контейнер</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Списки</h2>
+        <div class="lr">
+            <div class="c5">
+                <script type="snippet" lang="html">
+                    <ul>
+                      <li>Молоко</li>
+                      <li>Хлеб</li>
+                    </ul>
+                </script>
+                <p><code>ul</code> - маркированный список</p>
+            </div>
+            <div class="c5">
+                <script type="snippet" lang="html">
+                    <ol>
+                      <li>Открыть редактор</li>
+                      <li>Написать HTML</li>
+                    </ol>
+                </script>
+                <p><code>ol</code> - нумерованный список</p>
+            </div>
+        </div>
+        <p>Внутри <code>ul</code> и <code>ol</code> могут быть только <code>li</code>.
+           Списки можно вкладывать: новый <code>ul</code> — внутри <code>li</code>.
+           Меню сайта — это тоже список.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Таблицы</h2>
+        <script type="snippet" lang="html">
+            <table>
+              <tr><th>Лекция</th><th>Тема</th></tr>
+              <tr><td>1</td><td>Введение в Web</td></tr>
+              <tr><td>2</td><td>DNS, TCP, TLS, HTTP</td></tr>
+            </table>
+        </script>
+        <ul>
+            <li><code>tr</code> - строка, <code>th</code> - ячейка заголовка, <code>td</code> - ячейка</li>
+            <li>Таблицы — для табличных данных, <b>не для вёрстки макета</b></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Изображения</h2>
+        <script type="snippet" lang="html">
+            <img src="images/logo.png" alt="Логотип курса"
+                 width="200" height="100">
+        </script>
+        <ul>
+            <li><code>src</code> - URL картинки (абсолютный или относительный)</li>
+            <li><code>alt</code> - текстовое описание: показывается, если картинка не загрузилась,
+                и читается экранными чтецами. <b>Обязателен</b></li>
+            <li><code>width</code>, <code>height</code> - размеры; браузер заранее резервирует место</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Гиперссылки</h2>
+        <script type="snippet" lang="html">
+            <a href="https://duckduckgo.com" target="_blank">
+                <img src="duck.png" alt="DuckDuckGo">
+            </a>
+        </script>
+        <ul>
+            <li><code>href</code> - URL гиперссылки</li>
+            <li><code>target</code> - в каком окне открывать ссылку</li>
+            <li><code>id</code> - уникальный идентификатор, может использоваться как якорная точка</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Какие бывают ссылки</h2>
+        <script type="snippet" lang="html">
+            <a href="https://developer.mozilla.org/">Внешняя</a>
+            <a href="/courses/web/">От корня сайта</a>
+            <a href="lecture-2.html">Соседняя страница</a>
+            <a href="#contacts">К разделу этой страницы</a>
+            <a href="mailto:team@example.com">Письмо</a>
+            <a href="tel:+70000000000">Позвонить</a>
+
+            <section id="contacts">...</section>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Формы</h2>
+        <p>Форма собирает данные пользователя и отправляет их на сервер HTTP-запросом:</p>
+        <script type="snippet" lang="html">
+            <form action="https://httpbin.org/get" method="GET">
+              <label for="q">Поиск:</label>
+              <input id="q" name="q" type="search" required>
+              <button type="submit">Найти</button>
+            </form>
+        </script>
+        <p>После отправки браузер перейдёт на<br>
+           <code>https://httpbin.org/get?q=<i>введённый+текст</i></code></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Атрибуты формы</h2>
+        <ul>
+            <li><code>action</code> - URL, на который будет отправлена форма (по умолчанию — текущий)</li>
+            <li><code>method</code> - HTTP метод, GET (по умолчанию) или POST</li>
+            <li><code>enctype</code> - способ кодирования данных формы:
+                <ul>
+                    <li><code>application/x-www-form-urlencoded</code> - по умолчанию</li>
+                    <li><code>multipart/form-data</code> - только когда нужно передать файлы</li>
+                </ul>
+            </li>
+            <li><code>target</code> - где открыть результат (<code>_self</code>, <code>_blank</code>), используется редко</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Элементы формы</h2>
+        <ul>
+            <li><code>input</code> - универсальное поле, вид задаёт <code>type</code>:
+                <ul>
+                    <li><code>text</code>, <code>email</code>, <code>password</code>, <code>number</code>, <code>date</code></li>
+                    <li><code>checkbox</code> - да/нет, <code>radio</code> - один вариант из нескольких</li>
+                    <li><code>file</code> - загрузка файла, <code>hidden</code> - невидимое поле</li>
+                </ul>
+            </li>
+            <li><code>textarea</code> - многострочное поле ввода</li>
+            <li><code>select</code>, <code>option</code> - выпадающий список</li>
+            <li><code>button</code> - кнопка (<code>type="submit"</code> отправляет форму)</li>
+            <li><code>label</code> - подпись к полю</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Атрибуты полей ввода</h2>
+        <script type="snippet" lang="html">
+            <input type="email" name="email" value=""
+                   placeholder="you@example.com" required>
+        </script>
+        <ul>
+            <li><code>name</code> - имя, под которым значение попадёт в запрос. <b>Без name поле не отправится!</b></li>
+            <li><code>value</code> - начальное значение</li>
+            <li><code>placeholder</code> - подсказка внутри пустого поля</li>
+            <li><code>required</code>, <code>minlength</code>, <code>min</code>/<code>max</code> - проверка в браузере</li>
+            <li><code>checked</code>, <code>selected</code>, <code>disabled</code> - состояние поля</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Подписи: label</h2>
+        <script type="snippet" lang="html">
+            <!-- Связь через for и id -->
+            <label for="email">Почта</label>
+            <input id="email" name="email" type="email">
+
+            <!-- Или поле внутри label -->
+            <label>
+              <input type="checkbox" name="agree"> Согласен
+            </label>
+        </script>
+        <p>Клик по подписи ставит фокус в поле или переключает чекбокс.
+           Экранные чтецы читают подпись вместе с полем.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Пример формы с файлом</h2>
+        <script type="snippet" lang="html">
+            <form method="POST" action="/add/"
+                  enctype="multipart/form-data">
+              <input name="image" type="file">
+              <input name="id" type="hidden" value="3">
+              <input name="nick" type="text">
+              <button type="submit">Отправить</button>
+              <button name="action" value="more">
+                 Все равно отправить
+              </button>
+            </form>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>GET или POST?</h2>
+        <div class="lr">
+            <div class="c5">
+                <h3>GET</h3>
+                <ul>
+                    <li>Данные в URL: <code>?q=web</code></li>
+                    <li>Видны в истории</li>
+                    <li>Можно поделиться ссылкой</li>
+                    <li>Поиск, фильтры</li>
+                </ul>
+            </div>
+            <div class="c5">
+                <h3>POST</h3>
+                <ul>
+                    <li>Данные в теле запроса</li>
+                    <li>Не попадают в URL</li>
+                    <li>Подходит для файлов</li>
+                    <li>Создание, изменение, логин</li>
+                </ul>
+            </div>
+        </div>
+        <p><small>POST — не шифрование! Защищает только HTTPS</small></p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>application/x-www-form-urlencoded</h2>
+        <p>
+            Это способ кодирования данных формы для передачи через URL.<br>
+            Допустим есть форма со следующими данными:
+            <script type="snippet" lang="plain">
+                id: 3
+                name: Вася
+                friend: [4, 5]
+            </script>
+            В закодированном виде это будет выглядеть так:
+            <code>id=3&amp;name=%D0%92%D0%B0%D1%81%D1%8F&amp;friend=4&amp;friend=5</code>
+        </p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Собираем всё вместе (1/2)</h2>
+        <script type="snippet" lang="html">
+            <!DOCTYPE html>
+            <html lang="ru">
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1">
+                <title>Моя первая страница</title>
+              </head>
+              <body>
+                <header>
+                  <h1>Привет, Web!</h1>
+                  <nav><a href="#feedback">Обратная связь</a></nav>
+                </header>
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Собираем всё вместе (2/2)</h2>
+        <script type="snippet" lang="html">
+            <main>
+              <p>Учусь по <a href="https://doka.guide/">Доке</a></p>
+              <img src="images/me.jpg" alt="Моё фото">
+              <form id="feedback" action="https://httpbin.org/post"
+                    method="POST">
+                <label for="msg">Сообщение</label>
+                <textarea id="msg" name="msg" required></textarea>
+                <button type="submit">Отправить</button>
+              </form>
+            </main>
+            <!-- и закрываем body и html -->
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Инструменты</h2>
+        <ul>
+            <li><b>Редактор:</b> VS Code, PyCharm, WebStorm</li>
+            <li><b>DevTools</b> (F12):
+                <ul>
+                    <li>Elements - дерево DOM и стили элемента</li>
+                    <li>Network - запросы, заголовки, коды ответа</li>
+                    <li>Console - ошибки и JavaScript</li>
+                </ul>
+            </li>
+            <li><b>Валидатор:</b> <a href="https://validator.w3.org/">validator.w3.org</a></li>
+            <li><b>curl</b> и <b>httpbin.org</b> - посмотреть запросы со стороны сервера</li>
+        </ul>
+    </div></section>
+
+    <!-- РАЗДЕЛ 5: CSS -->
+    <section class="slide shout"><div>
+        <h2>CSS</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Cascading Style Sheets</h2>
+        <p>CSS позволяет описывать внешний вид отдельно от структуры документа</p>
+        <script type="snippet" lang="css" scale="80">
+            body {
+                font-family: system-ui, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            nav a {
+                color: #0055cc;
+                text-decoration: none;
+            }
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Где могут быть заданы стили?</h2>
+        <ul>
+            <li>Встроенные в браузер стили</li>
+            <li>Во внешнем файле<br>
+                <code>&lt;link rel="stylesheet" href="style.css"&gt;</code></li>
+            <li>В коде HTML документа<br>
+                <code>&lt;style&gt;...&lt;/style&gt;</code></li>
+            <li>Стили могут быть привязаны к конкретному тегу<br>
+                <code>&lt;img style="margin: 3px" src="..."&gt;</code></li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Базовые селекторы</h2>
+        <ul>
+            <li>Универсальный селектор<br>
+                <code>* { margin: 0; padding: 0; }</code>
+            </li>
+            <li>Имена тегов<br>
+                <code>p { margin-top: 10px; }</code>
+            </li>
+            <li>Имена классов (с точки)<br>
+                <code>.btn { border: solid 1px gray; }</code>
+            </li>
+            <li>id тегов (с решетки)<br>
+                <code>#userpic { padding: 10px }</code>
+            </li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Режимы отображения элементов</h2>
+        <ul>
+            <li><code>display: none</code> - элемент невидим, не занимает места</li>
+            <li><code>display: block</code> - элемент занимает максимальную ширину, начинается с новой строки</li>
+            <li><code>display: inline</code> - элемент занимает минимальную ширину, не прерывает строку</li>
+            <li><code>display: inline-block</code> - блочный элемент, но не разрывает строку</li>
+            <li><code>display: flex</code>, <code>display: grid</code> - современная раскладка дочерних элементов в строку, колонку или сетку</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Отступы и box-model</h2>
+        <div class="lr">
+            <div class="c5">
+                <img src="../lesson-4/pictures/boxmodel.png" alt="Box model: content, padding, border, margin">
+            </div>
+            <div class="c5">
+                Способы задания отступов:
+                <script type="snippet" lang="css">
+                    margin: 10px;
+                    margin: 10px 5px;
+                    margin: 10px 2px 5px;
+                    margin: 1px 2px 3px 4px;
+                    margin-left: 10px;
+                </script>
+            </div>
+        </div>
+    </div></section>
+
+    <!-- РАЗДЕЛ 6: JavaScript -->
+    <section class="slide shout"><div>
+        <h2>JavaScript</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что такое JavaScript?</h2>
+        <ul>
+            <li>Язык программирования для веб-браузеров</li>
+            <li>Обеспечивает интерактивность веб-страниц</li>
+            <li>Выполняется на стороне клиента (в браузере)</li>
+            <li>Может работать и на сервере (Node.js)</li>
+            <li>Динамическая типизация, прототипное наследование</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>JavaScript в HTML</h2>
+        <script type="snippet" lang="html">
+            <script src="script.js">&lt;/script&gt;
+
+            <script>
+                // Код JavaScript прямо в HTML
+                document.addEventListener('DOMContentLoaded', () => {
+                    console.log('Страница загружена');
+                });
+            &lt;/script&gt;
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Манипуляция DOM</h2>
+        <script type="snippet" lang="javascript">
+            // Поиск элементов
+            const element = document.getElementById('myId');
+            const elements = document.querySelectorAll('.myClass');
+
+            // Изменение содержимого
+            element.textContent = 'Новый текст';
+
+            // Изменение стилей
+            element.style.color = 'red';
+
+            // Обработка событий
+            element.addEventListener('click', () => {
+                alert('Клик!');
+            });
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>AJAX запросы</h2>
+        <script type="snippet" lang="javascript">
+            const saveApiUrl = '/items/save/';
+            const newTitle = 'Duck tales';
+
+            fetch(saveApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: 10, title: newTitle })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data));
+        </script>
+    </div></section>
+
+    <!-- РАЗДЕЛ 7: Клиентские библиотеки -->
+    <section class="slide shout"><div>
+        <h2>Клиентские библиотеки</h2>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>jQuery</h2>
+        <ul>
+            <li>Популярная библиотека для работы с DOM, AJAX, событиями</li>
+            <li>Кроссбраузерная совместимость</li>
+            <li>В 2026-м - скорее исторический контекст</li>
+        </ul>
+        <script type="snippet" lang="javascript" scale="70">
+            // Пример использования jQuery
+            $.ajax({
+                type: 'POST',
+                url:  '/items/save/',
+                data: { id: 10, title: 'Duck tales' },
+                success: function(data) {
+                    console.log(data);
+                }
+            });
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Bootstrap</h2>
+        <p>Bootstrap - это готовая библиотека стилей (CSS-фреймворк), изначально созданная в Twitter,
+           сейчас — самостоятельный open-source проект.
+           Bootstrap позволяет быстро разработать приемлемый дизайн даже при базовых знаниях CSS.</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Что включает в себя Bootstrap?</h2>
+        <ul>
+            <li>Шаблон страниц</li>
+            <li>Сетка (Grid System)</li>
+            <li>Современные «стили по умолчанию»</li>
+            <li>Верстка: таблицы, формы, списки, кнопки</li>
+            <li>Компоненты: навигация, меню, пагинатор</li>
+            <li>JavaScript плагины</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Сетка Bootstrap</h2>
+        <script type="snippet" lang="html">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 col-lg-2">LEFT</div>
+                    <div class="col-md-8 col-lg-10">CONTENT</div>
+                </div>
+            </div>
+        </script>
+        <img src="../lesson-4/pictures/grid1.png" width="100%" alt="Сетка Bootstrap">
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>React</h2>
+        <ul>
+            <li>Библиотека для создания пользовательских интерфейсов</li>
+            <li>Разработана компанией Facebook (Meta)</li>
+            <li>Компонентный подход к разработке</li>
+            <li>Виртуальный DOM для оптимизации производительности</li>
+            <li>Однонаправленный поток данных</li>
+        </ul>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>React: Компонентный подход</h2>
+        <script type="snippet" lang="javascript">
+            // Пример React компонента
+            function Welcome({ name }) {
+                return <h1>Привет, {name}!</h1>;
+            }
+
+            // Использование компонента
+            const root = ReactDOM.createRoot(
+                document.getElementById('root')
+            );
+            root.render(<Welcome name="Мир" />);
+        </script>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Современные web-приложения (SPA)</h2>
+        <ul>
+            <li>UI находится на одной или нескольких страницах (Single Page Application)</li>
+            <li>UI полностью статичен: HTML, CSS, JS - статические файлы</li>
+            <li>Логика UI полностью работает на стороне клиента</li>
+            <li>Используется шаблонизация в JavaScript</li>
+            <li>Application сервер возвращает чистые данные (JSON)</li>
+            <li>Фреймворки: React, Vue.js, Angular</li>
+        </ul>
+    </div></section>
+
+    <!-- ЗАКЛЮЧЕНИЕ -->
+    <section class="slide"><div>
+        <h2>Итоги</h2>
+        <ul>
+            <li>Internet — сеть сетей, WWW — сервис документов поверх неё</li>
+            <li>URL однозначно указывает на ресурс; относительные URL разрешаются от текущего документа</li>
+            <li>Браузер и сервер общаются по HTTP: запрос → ответ</li>
+            <li>HTML описывает структуру, CSS — внешний вид, JavaScript — поведение</li>
+            <li>Формы отправляют данные на сервер методами GET и POST</li>
+        </ul>
+        <p><b>Дальше:</b> лекция 2 — DNS, TCP, TLS и HTTP в деталях</p>
+    </div></section>
+
+    <section class="slide"><div>
+        <h2>Полезные ресурсы</h2>
+        <ul>
+            <li><a href="https://developer.mozilla.org/ru/">MDN Web Docs</a> - документация по веб-технологиям</li>
+            <li><a href="https://doka.guide/">Дока</a> - справочник по HTML, CSS и JS на русском</li>
+            <li><a href="https://learn.javascript.ru/">learn.javascript.ru</a> - учебник по JavaScript</li>
+            <li><a href="https://validator.w3.org/">validator.w3.org</a> - проверка HTML</li>
+            <li><a href="https://getbootstrap.com/">Bootstrap</a> - официальный сайт Bootstrap</li>
+            <li><a href="https://react.dev/">React</a> - официальный сайт React</li>
+        </ul>
+    </div></section>
+
+    <section class="slide shout"><div>
+        <h2>Спасибо за внимание!</h2>
+    </div></section>
+
+    <div class="progress"><div></div></div>
+    <script src="../../static/js/highlight.pack.js"></script>
+    <script src="../../static/node_modules/shower-core/shower.min.js"></script>
+    <script src="../../static/js/init.js"></script>
+</body>
+</html>
